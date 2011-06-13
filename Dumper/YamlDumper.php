@@ -20,7 +20,9 @@ class YamlDumper implements DumperInterface
 
         $exploded = explode('.', $id);
         foreach ($exploded as $node) {
-            $finalNode =& $finalNode[$node];
+            if (isset($finalNode[$node])) {
+                $finalNode =& $finalNode[$node];
+            }
         }
 
         if (null !== $finalNode) {
