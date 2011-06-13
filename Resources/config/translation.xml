@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="translator.debug" class="Knplabs\Bundle\TranslatorBundle\Translation\Translator">
+            <argument type="service" id="service_container" />
+            <argument type="service" id="translator.selector" />
+            <argument type="collection" /> <!-- translation loaders -->
+            <argument type="collection">
+                <argument key="cache_dir">null</argument> <!-- force reloading of cache -->
+                <argument key="debug">%kernel.debug%</argument>
+            </argument>
+            <argument type="service" id="session" on-invalid="ignore" />
+        </service>
+
+        <service id="translator.dumper.yaml" class="Knplabs\Bundle\TranslatorBundle\Dumper\YamlDumper">
+            <tag name="knplabs_translator.dumper"/>
+        </service>
+    </services>
+</container>
