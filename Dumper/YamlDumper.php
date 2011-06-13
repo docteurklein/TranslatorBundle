@@ -13,6 +13,21 @@ class YamlDumper implements DumperInterface
         return 'yml' === pathinfo($resource->getResource(), PATHINFO_EXTENSION);
     }
 
+    /**
+     *
+     * Updates the content of a yaml file with value for the matched trans id
+     * The separation of trans id with dots describes the nested level of the node in yaml
+     *
+     * @see Symfony\Component\Translator\Loader\ArrayLoader which has the inverse behavior.
+     *
+     * knplabs_translator.title will match:
+     * ``` yaml
+     *
+     * knplabs_translator:
+     *     title: <new value>
+     *
+     * ```
+     */
     public function update(ResourceInterface $resource, $id, $value)
     {
         $translations = Yaml::load($resource->getResource());
