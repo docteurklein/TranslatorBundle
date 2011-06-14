@@ -97,10 +97,11 @@ class Translator extends BaseTranslator
     }
 
     /**
-     * Gets the resources that matches a domain on a particular catalog
+     * Gets the resources that matches a domain and a locale on a particular catalog
      *
      * @param MessageCatalogue $catalog the catalog
      * @param string $domain the domain name (default is 'messages')
+     * @param string $locae the locale, to filter fallbackLocale
      * @return array of FileResource objects
      */
     private function getMatchedResources(MessageCatalogue $catalog, $domain, $locale)
