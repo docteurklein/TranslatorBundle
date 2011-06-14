@@ -43,7 +43,8 @@ class YamlDumper implements DumperInterface
         if (null !== $finalNode) {
             $finalNode = $value;
         }
-        $yaml = Yaml::dump($translations);
+        // dump yaml and switch to inline at 1000th level
+        $yaml = Yaml::dump($translations, 1000);
 
         return false !== file_put_contents($resource->getResource(), $yaml);
     }

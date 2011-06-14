@@ -86,14 +86,22 @@ class Translator extends BaseTranslator
         $resources = $this->getMatchedResources($catalog, $domain, $locale);
 
         $success = false;
-
         foreach ($resources as $resource) {
             if ($dumper = $this->getDumper($resource)) {
                 $success = $dumper->update($resource, $id, $value);
             }
         }
 
+        $this->loadCatalogue($locale);
+
         return $success;
+    }
+
+    protected function loadCatalogue($locale)
+    {
+        unset($this->catalogues[$locale]);
+
+        parent::loadCatalogue($locale);
     }
 
     /**
