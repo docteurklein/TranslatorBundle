@@ -83,7 +83,7 @@ class Translator extends BaseTranslator
     {
         $catalog = $this->getCatalog($locale);
 
-        $resources = $this->getMatchedResources($catalog, $domain);
+        $resources = $this->getMatchedResources($catalog, $domain, $locale);
 
         $success = false;
 
@@ -103,7 +103,7 @@ class Translator extends BaseTranslator
      * @param string $domain the domain name (default is 'messages')
      * @return array of FileResource objects
      */
-    private function getMatchedResources(MessageCatalogue $catalog, $domain)
+    private function getMatchedResources(MessageCatalogue $catalog, $domain, $locale)
     {
         $matched = array();
         foreach ($catalog->getResources() as $resource) {
@@ -111,9 +111,9 @@ class Translator extends BaseTranslator
             // @see Symfony\Bundle\FrameworkBundle\DependencyInjection\FrameworkExtension;
             // filename is domain.locale.format
             $basename = \basename($resource->getResource());
-            list($resourceDomain, $locale, $format) = explode('.', $basename);
+            list($resourceDomain, $resourceLocale, $format) = explode('.', $basename);
 
-            if ($domain === $resourceDomain) {
+            if ($domain === $resourceDomain && $locale === $resourceLocale) {
                 $matched[] = $resource;
             }
         }
