@@ -19,6 +19,13 @@ class YamlDumperTest extends \PHPUnit_Framework_TestCase
         unlink(__DIR__.'/../Fixtures/tests.en.yml');
     }
 
+    /**
+     * We use Mocks of FileResource to avoid resolving the filename by realpath
+     * @see Symfony\Component\Config\Resource\FileResource::__construct
+     *
+     * @return FileResource a mock of FileResource
+     *
+     */
     private function getFileResourceStub($filename)
     {
         $stub = $this->getMockBuilder('Symfony\Component\Config\Resource\FileResource')
@@ -49,8 +56,8 @@ class YamlDumperTest extends \PHPUnit_Framework_TestCase
     public function testUpdateReturnValue()
     {
         $dumper = new YamlDumper;
-        $resource = new FileResource(__DIR__.'/../Fixtures/tests.en.yml');
-        $this->assertTrue($dumper->update($resource, 'foo.bar.baz', 'test'));
+        $stub = $this->getFileResourceStub(__DIR__.'/../Fixtures/tests.en.yml');
+        $this->assertTrue($dumper->update($stub, 'foo.bar.baz', 'test'));
     }
 
     /**
@@ -67,11 +74,11 @@ class YamlDumperTest extends \PHPUnit_Framework_TestCase
     public function provideInvalidKeys()
     {
         return array(
-            array('i.dont.exist',       'me neither'),
+            array('i.dont.exist',       'I do'),
             array('i have no dots',     'me neither'),
-            array('singleelementkey',   'me neither'),
-            array('foo.bar',            'bar!'),
-            array('',                   'me neither'),
+            array('singleelementkey',   'not me'),
+            array('foo.bar',            'i exist, but i\'m not a scalar node'),
+            array('',                   'huh'),
         );
     }
 
