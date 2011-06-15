@@ -2,11 +2,11 @@
 
 namespace Knplabs\Bundle\TranslatorBundle\Dumper;
 
-use Symfony\Component\Config\Resource\ResourceInterface;
+use Symfony\Component\Config\Resource\FileResource;
 
 interface DumperInterface
 {
-    function supports(ResourceInterface $resource);
+    function supports(FileResource $resource);
 
-    function update(ResourceInterface $resource, $id, $value);
+    function update(FileResource $resource, $id, $value);
 }

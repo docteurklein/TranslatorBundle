@@ -10,7 +10,7 @@ class YamlDumperTest extends DumperTest
     {
         return array(
             __DIR__.'/../Fixtures/tests.fr.yml.dist' => __DIR__.'/../Fixtures/tests.fr.yml',
-            __DIR__.'/../Fixtures/tests.en.yml.dist'=> __DIR__.'/../Fixtures/tests.en.yml'
+            __DIR__.'/../Fixtures/tests.en.yml.dist' => __DIR__.'/../Fixtures/tests.en.yml'
         );
     }
 
@@ -43,6 +43,16 @@ class YamlDumperTest extends DumperTest
         $dumper = new YamlDumper;
         $stub = $this->getFileResourceStub(__DIR__.'/../Fixtures/tests.en.yml');
         $dumper->update($stub, $key, $value);
+    }
+
+    /**
+     * @dataProvider provideValidKeys
+     */
+    public function testUpdateValidKey($key, $value)
+    {
+        $dumper = new YamlDumper;
+        $stub = $this->getFileResourceStub(__DIR__.'/../Fixtures/tests.en.yml');
+        $this->assertTrue($dumper->update($stub, $key, $value));
     }
 
     public function provideInvalidKeys()

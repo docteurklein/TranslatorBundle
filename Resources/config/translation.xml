@@ -19,5 +19,8 @@
         <service id="translator.dumper.yaml" class="Knplabs\Bundle\TranslatorBundle\Dumper\YamlDumper">
             <tag name="knplabs_translator.dumper"/>
         </service>
+        <service id="translator.dumper.xliff" class="Knplabs\Bundle\TranslatorBundle\Dumper\XliffDumper">
+            <tag name="knplabs_translator.dumper"/>
+        </service>
     </services>
 </container>

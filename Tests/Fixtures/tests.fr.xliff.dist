@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="1">
+                <source>foo.bar.baz</source>
+                <target>foobarbaz</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>i.dont.exist</source>
+                <target>foobarbaz</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>i have no dots</source>
+                <target>foobarbaz</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>singleelementkey</source>
+                <target>foobarbaz</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>foo.bar</source>
+                <target>foobarbaz</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>foo.bar.baz</source>
+                <target>foobarbaz</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>a key with %placeholder%</source>
+                <target>foobarbaz</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>a key with single ' quotes ''</source>
+                <target>foobarbaz</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>a key with double " quotes """!</source>
+                <target>foobarbaz</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source><![CDATA[some xpath| < \ || ' "chars"!]]></source>
+                <target>foobarbaz</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

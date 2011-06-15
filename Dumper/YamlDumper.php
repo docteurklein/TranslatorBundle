@@ -3,13 +3,13 @@
 namespace Knplabs\Bundle\TranslatorBundle\Dumper;
 
 use Knplabs\Bundle\TranslatorBundle\Dumper\DumperInterface;
-use Symfony\Component\Config\Resource\ResourceInterface;
+use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\Yaml\Yaml;
 use Knplabs\Bundle\TranslatorBundle\Exception\InvalidTranslationKeyException;
 
 class YamlDumper implements DumperInterface
 {
-    public function supports(ResourceInterface $resource)
+    public function supports(FileResource $resource)
     {
         return 'yml' === pathinfo($resource->getResource(), PATHINFO_EXTENSION);
     }
@@ -29,7 +29,7 @@ class YamlDumper implements DumperInterface
      *
      * ```
      */
-    public function update(ResourceInterface $resource, $id, $value)
+    public function update(FileResource $resource, $id, $value)
     {
         $translations = Yaml::load($resource->getResource());
         if (!is_array($translations)) {

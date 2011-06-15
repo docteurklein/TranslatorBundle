@@ -7,20 +7,20 @@ use Symfony\Component\Translation\Loader\ArrayLoader;
 use Symfony\Component\Translation\Loader\YamlFileLoader;
 use Knplabs\Bundle\TranslatorBundle\Translation\Translator;
 use Knplabs\Bundle\TranslatorBundle\Dumper\YamlDumper;
+use Knplabs\Bundle\TranslatorBundle\Tests\Dumper\DumperTest;
 
-class TranslatorTest extends \PHPUnit_Framework_TestCase
+class TranslatorTest extends DumperTest
 {
 
-    public function setUp()
+    public function getTestFiles()
     {
-        copy(__DIR__.'/../Fixtures/tests.fr.yml.dist', __DIR__.'/../Fixtures/tests.fr.yml');
-        copy(__DIR__.'/../Fixtures/tests.en.yml.dist', __DIR__.'/../Fixtures/tests.en.yml');
-    }
+        return array(
+            __DIR__.'/../Fixtures/tests.fr.xliff.dist' => __DIR__.'/../Fixtures/tests.fr.xliff',
+            __DIR__.'/../Fixtures/tests.en.xliff.dist' => __DIR__.'/../Fixtures/tests.en.xliff',
 
-    public function tearDown()
-    {
-        unlink(__DIR__.'/../Fixtures/tests.fr.yml');
-        unlink(__DIR__.'/../Fixtures/tests.en.yml');
+            __DIR__.'/../Fixtures/tests.fr.yml.dist' => __DIR__.'/../Fixtures/tests.fr.yml',
+            __DIR__.'/../Fixtures/tests.en.yml.dist' => __DIR__.'/../Fixtures/tests.en.yml',
+        );
     }
 
     public function testYamlUpdate()

@@ -15,6 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Translation\Translator as BaseTranslator;
 use Symfony\Component\Config\Resource\ResourceInterface;
 use Knplabs\Bundle\TranslatorBundle\Dumper\DumperInterface;
 use Symfony\Component\Translation\MessageCatalogue;
+use Knplabs\Bundle\TranslatorBundle\Exception\InvalidTranslationKeyException;
 
 /**
  * Translator that adds write capabilites on translation files
@@ -88,7 +89,13 @@ class Translator extends BaseTranslator
         $success = false;
         foreach ($resources as $resource) {
             if ($dumper = $this->getDumper($resource)) {
-                $success = $dumper->update($resource, $id, $value);
+                // @TODO finally, should we throw an exception ?
+                try {
+                    $success = $dumper->update($resource, $id, $value);
+                }
+                catch (InvalidTranslationKeyException $e) {
+                    $success = false;
+                }
             }
         }
 
