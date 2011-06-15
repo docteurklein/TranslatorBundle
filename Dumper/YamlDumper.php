@@ -5,6 +5,7 @@ namespace Knplabs\Bundle\TranslatorBundle\Dumper;
 use Knplabs\Bundle\TranslatorBundle\Dumper\DumperInterface;
 use Symfony\Component\Config\Resource\ResourceInterface;
 use Symfony\Component\Yaml\Yaml;
+use Knplabs\Bundle\TranslatorBundle\Exception\InvalidTranslationKeyException;
 
 class YamlDumper implements DumperInterface
 {
@@ -31,21 +32,35 @@ class YamlDumper implements DumperInterface
     public function update(ResourceInterface $resource, $id, $value)
     {
         $translations = Yaml::load($resource->getResource());
+        if (!is_array($translations)) {
+            return false;
+        }
+        // working on references of the array elements
         $finalNode =& $translations;
 
-        $exploded = explode('.', $id);
-        foreach ($exploded as $node) {
-            if (isset($finalNode[$node])) {
-                $finalNode =& $finalNode[$node];
+        $explodedId = explode('.', $id);
+        foreach ($explodedId as $node) {
+            if (false === isset($finalNode[$node])) {
+                throw new InvalidTranslationKeyException(
+                    sprintf('The key "%s" can not be found in "%s"', $id, $resource->getResource())
+                );
             }
+            // working on references of the array elements
+            $finalNode =& $finalNode[$node];
         }
 
-        if (null !== $finalNode) {
-            $finalNode = $value;
+        if(is_array($finalNode)) {
+            throw new InvalidTranslationKeyException(
+                sprintf('The key "%s" is not a scalar yaml node in "%s"', $id, $resource->getResource())
+            );
         }
+
+        //this puts the value in the translations array, by reference
+        $finalNode = $value;
         // dump yaml and switch to inline at 1000th level
         $yaml = Yaml::dump($translations, 1000);
+        $result = file_put_contents($resource->getResource(), $yaml);
 
-        return false !== file_put_contents($resource->getResource(), $yaml);
+        return false !== $result;
     }
 }
