@@ -29,6 +29,9 @@ class TranslatorPass implements CompilerPassInterface
 
         foreach($translatorRealDefinition->getMethodCalls() as $methodCall) {
             $translatorDefinition->addMethodCall($methodCall[0], $methodCall[1]);
+            if ('addResource' === $methodCall[0]) {
+                $translatorDefinition->addMethodCall('addLocale', array($methodCall[1][2]));
+            }
         }
 
         foreach($container->findTaggedServiceIds('knplabs_translator.dumper') as $id => $attributes) {

@@ -9,5 +9,10 @@
             <argument type="service" id="request" />
             <argument type="service" id="translator.debug" />
         </service>
+
+        <service id="knplabs_translator.controller.edition" class="Knplabs\Bundle\TranslatorBundle\Controller\EditionController" scope="request">
+            <argument type="service" id="request" />
+            <argument type="service" id="translator.debug" />
+        </service>
     </services>
 </container>

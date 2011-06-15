@@ -1,0 +1,6 @@
+knplabs_translator_list:
+    pattern:  /list/{locale}
+    defaults: 
+        _controller: knplabs_translator.controller.edition:listAction
+    requirements: { _method: GET }
+

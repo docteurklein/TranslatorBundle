@@ -26,6 +26,12 @@ use Knplabs\Bundle\TranslatorBundle\Exception\InvalidTranslationKeyException;
 class Translator extends BaseTranslator
 {
     private $dumpers = array();
+    private $locales;
+
+    public function getAll($locale)
+    {
+        return $this->getCatalog($locale)->all();
+    }
 
     /**
      * Adds a dumper to the ones used to dump a resource
@@ -33,6 +39,16 @@ class Translator extends BaseTranslator
     public function addDumper(DumperInterface $dumper)
     {
         $this->dumpers[] = $dumper;
+    }
+
+    public function addLocale($locale)
+    {
+        $this->locales[$locale] = $locale;
+    }
+
+    public function getLocales()
+    {
+        return $this->locales;
     }
 
     /**
