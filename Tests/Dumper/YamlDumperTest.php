@@ -3,47 +3,21 @@
 namespace Knplabs\Bundle\TranslatorBundle\Tests\Dumper;
 
 use Knplabs\Bundle\TranslatorBundle\Dumper\YamlDumper;
-use Symfony\Component\Config\Resource\FileResource;
 
-class YamlDumperTest extends \PHPUnit_Framework_TestCase
+class YamlDumperTest extends DumperTest
 {
-    public function setUp()
+    public function getTestFiles()
     {
-        copy(__DIR__.'/../Fixtures/tests.fr.yml.dist', __DIR__.'/../Fixtures/tests.fr.yml');
-        copy(__DIR__.'/../Fixtures/tests.en.yml.dist', __DIR__.'/../Fixtures/tests.en.yml');
-    }
-
-    public function tearDown()
-    {
-        unlink(__DIR__.'/../Fixtures/tests.fr.yml');
-        unlink(__DIR__.'/../Fixtures/tests.en.yml');
-    }
-
-    /**
-     * We use Mocks of FileResource to avoid resolving the filename by realpath
-     * @see Symfony\Component\Config\Resource\FileResource::__construct
-     *
-     * @return FileResource a mock of FileResource
-     *
-     */
-    private function getFileResourceStub($filename)
-    {
-        $stub = $this->getMockBuilder('Symfony\Component\Config\Resource\FileResource')
-            ->disableOriginalConstructor()->getMock();
-
-        $stub
-            ->expects($this->any())
-            ->method('getResource')
-            ->will($this->returnValue($filename));
-
-        return $stub;
+        return array(
+            __DIR__.'/../Fixtures/tests.fr.yml.dist' => __DIR__.'/../Fixtures/tests.fr.yml',
+            __DIR__.'/../Fixtures/tests.en.yml.dist'=> __DIR__.'/../Fixtures/tests.en.yml'
+        );
     }
 
     public function testSupportsYaml()
     {
         $dumper = new YamlDumper;
-        $stub = $this->getFileResourceStub(__DIR__.'/../Fixtures/tests.en.yml');
-        $this->assertTrue($dumper->supports($stub));
+        $this->assertSupportsFormat($dumper, __DIR__.'/../Fixtures/tests.en.yml');
     }
 
     public function testNotSupportsXml()
