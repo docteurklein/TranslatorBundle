@@ -36,9 +36,9 @@ class TranslatorController
     public function putAction($id, $domain, $locale)
     {
         $value = $this->request->get('value');
-
         $success = $this->translator->update($id, $value, $domain, $locale);
+        $trans = $this->translator->trans($id, array(), $domain, $locale);
 
-        return new Response(json_encode($success));
+        return new Response($trans);
     }
 }
