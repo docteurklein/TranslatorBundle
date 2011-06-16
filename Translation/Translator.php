@@ -122,9 +122,7 @@ class Translator extends BaseTranslator
      */
     public function update($id, $value, $domain, $locale)
     {
-        $catalog = $this->getCatalog($locale);
-
-        $resources = $this->getMatchedResources($catalog, $domain, $locale);
+        $resources = $this->getResources($locale, $domain);
 
         $success = false;
         foreach ($resources as $resource) {
@@ -175,5 +173,13 @@ class Translator extends BaseTranslator
         }
 
         return $matched;
+    }
+
+    public function getResources($locale, $domain)
+    {
+        $catalog = $this->getCatalog($locale);
+        $resources = $this->getMatchedResources($catalog, $domain, $locale);
+
+        return $resources;
     }
 }

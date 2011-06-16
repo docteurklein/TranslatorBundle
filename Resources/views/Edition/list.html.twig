@@ -12,7 +12,7 @@
 
         <h3>{{ domain }}</h3>
         <ul>
-            {% for resource in translator.getCatalog(locale).getResources() %}
+            {% for resource in translator.getResources(locale, domain) %}
                 <li>{{ resource.getResource() }}</li>
             {% endfor %}
         </ul>
