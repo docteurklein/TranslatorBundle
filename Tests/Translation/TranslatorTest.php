@@ -8,6 +8,7 @@ use Symfony\Component\Translation\Loader\YamlFileLoader;
 use Knplabs\Bundle\TranslatorBundle\Translation\Translator;
 use Knplabs\Bundle\TranslatorBundle\Dumper\YamlDumper;
 use Knplabs\Bundle\TranslatorBundle\Tests\Dumper\DumperTest;
+use Symfony\Component\Translation\Loader\XliffFileLoader;
 
 class TranslatorTest extends DumperTest
 {
@@ -20,6 +21,9 @@ class TranslatorTest extends DumperTest
 
             __DIR__.'/../Fixtures/tests.fr.yml.dist' => __DIR__.'/../Fixtures/tests.fr.yml',
             __DIR__.'/../Fixtures/tests.en.yml.dist' => __DIR__.'/../Fixtures/tests.en.yml',
+
+            __DIR__.'/../Fixtures/thedomain.fr.yml.dist' => __DIR__.'/../Fixtures/thedomain.fr.yml',
+            __DIR__.'/../Fixtures/thedomain.en.yml.dist' => __DIR__.'/../Fixtures/thedomain.en.yml',
         );
     }
 
@@ -29,6 +33,7 @@ class TranslatorTest extends DumperTest
 
         $translator = new Translator($containerMock, new MessageSelector());
         $translator->setLocale('en');
+        $translator->setFallbackLocale('en');
 
         $translator->addLoader('yaml', new YamlFileLoader());
         $translator->addResource('yaml', __DIR__.'/../Fixtures/tests.en.yml', 'en', 'tests');
@@ -48,5 +53,29 @@ YAML;
         $this->assertEquals($updatedEnContent, file_get_contents(__DIR__.'/../Fixtures/tests.en.yml'), 'file content is updated with new data');
 
         $this->assertEquals('foofoofoo', $translator->trans('foo.bar.baz', array(), 'tests', 'en'), 'translation uses updated value');
+    }
+
+    public function testResourcesRetrieval()
+    {
+        $containerMock = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
+
+        $translator = new Translator($containerMock, new MessageSelector());
+        $translator->setLocale('en');
+        $translator->setFallbackLocale('en');
+
+        $translator->addLoader('yaml', new YamlFileLoader());
+        $translator->addLoader('xliff', new XliffFileLoader());
+
+        $translator->addResource('yaml', __DIR__.'/../Fixtures/tests.en.yml',       'en', 'tests');
+        $translator->addResource('yaml', __DIR__.'/../Fixtures/tests.fr.yml',       'fr', 'tests');
+
+        $translator->addResource('yaml', __DIR__.'/../Fixtures/thedomain.en.yml',   'en', 'thedomain');
+        $translator->addResource('yaml', __DIR__.'/../Fixtures/thedomain.fr.yml',   'fr', 'thedomain');
+
+        $translator->addResource('xliff', __DIR__.'/../Fixtures/tests.en.xliff',    'en', 'tests');
+        $translator->addResource('xliff', __DIR__.'/../Fixtures/tests.fr.xliff',    'fr', 'tests');
+
+        $this->assertEquals(2, count($translator->getResources('en', 'tests')));
+        $this->assertEquals(1, count($translator->getResources('en', 'thedomain')));
     }
 }
