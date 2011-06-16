@@ -1,0 +1,33 @@
+{% extends 'KnplabsTranslatorBundle::layout.html.twig' %}
+
+{% block content %}
+
+<h2>{{ 'List of translations'|trans({}, 'KnplabsTranslatorBundle') }}</h2>
+
+{% for locale in translations|keys %}
+
+    <h2>{{ locale }}</h2>
+    
+    {% for domain in translations[locale]|keys %}
+
+        <h3>{{ domain }}</h3>
+        <ul>
+            {% for resource in translator.getCatalog(locale).getResources() %}
+                <li>{{ resource.getResource() }}</li>
+            {% endfor %}
+        </ul>
+
+        {% for source,target in translations[locale][domain] %}
+
+            <span class="trans-source">{{ source }}</span>:
+            <span class="trans-target">{{ target }}</span>
+            <br />
+
+        {% endfor %}
+
+    {% endfor %}
+
+{% endfor %}
+
+{% endblock content %}
+

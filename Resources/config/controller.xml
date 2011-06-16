@@ -13,6 +13,7 @@
         <service id="knplabs_translator.controller.edition" class="Knplabs\Bundle\TranslatorBundle\Controller\EditionController" scope="request">
             <argument type="service" id="request" />
             <argument type="service" id="translator.debug" />
+            <argument type="service" id="templating" />
         </service>
     </services>
 </container>

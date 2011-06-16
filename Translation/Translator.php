@@ -27,10 +27,16 @@ class Translator extends BaseTranslator
 {
     private $dumpers = array();
     private $locales;
+    private $fallbackLocale;
 
-    public function getAll($locale)
+    public function all()
     {
-        return $this->getCatalog($locale)->all();
+        $translations = array();
+        foreach ($this->getLocales() as $locale) {
+            $translations[$locale] = $this->getCatalog($locale)->all();
+        }
+
+        return $translations;
     }
 
     /**
@@ -84,6 +90,24 @@ class Translator extends BaseTranslator
         throw new \InvalidArgumentException(
             sprintf('The locale "%s" does not exist in Translations catalogues', $locale)
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * Forced to override because of private visibility
+     */
+    public function setFallbackLocale($locale)
+    {
+        // needed as the fallback locale is used to fill-in non-yet translated messages
+        $this->catalogues = array();
+
+        $this->fallbackLocale = $locale;
+    }
+
+    public function getFallbackLocale()
+    {
+        return $this->fallbackLocale;
     }
 
     /**

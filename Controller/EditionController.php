@@ -14,26 +14,33 @@ namespace Knplabs\Bundle\TranslatorBundle\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
 class EditionController
 {
     private $translator;
     private $request;
+    private $templating;
 
-    public function __construct(Request $request, Translator $translator)
+    public function __construct(Request $request, Translator $translator, EngineInterface $templating)
     {
         $this->request = $request;
         $this->translator = $translator;
+        $this->templating = $templating;
     }
 
-    public function listAction($locale)
+    public function listAction()
     {
-        $translations = array();
-        foreach ($this->translator->getLocales() as $locale) {
+        // to avoid repetition of the default catalog
+        $fallbackLocale = $this->translator->getFallbackLocale();
+        $this->translator->setFallbackLocale(null);
+        $translations = $this->translator->all();
 
-            $translations[$locale] = $this->translator->getAll($locale);
-        }
+        $this->translator->setFallbackLocale($fallbackLocale);
 
-        return new Response(json_encode($translations));
+        return $this->templating->renderResponse('KnplabsTranslatorBundle:Edition:list.html.twig', array(
+            'translations' => $translations,
+            'translator' => $this->translator
+        ));
     }
 }
