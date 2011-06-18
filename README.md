@@ -5,9 +5,10 @@ This bundle's purpose is to provide an interface for edition, addition and delet
 of translations messages.
 
 Currently supported formats:
-* YAML
-* XLIFF
-* CSV
+
+*   YAML
+*   XLIFF
+*   CSV
 
 
 Install & setup the bundle
@@ -17,74 +18,74 @@ Install & setup the bundle
 
     Using Git to control your project from project root directory:
     
-        ``` bash 
+    ``` bash 
 
-        git submodule add git://github.com/docteurklein/TranslatorBundle.git vendor/bundles/Knplabs/Bundle/TranslatorBundle
+    git submodule add git://github.com/docteurklein/TranslatorBundle.git vendor/bundles/Knplabs/Bundle/TranslatorBundle
 
-        ```
+    ```
         
     By cloning repository:
     
-        ``` bash 
+    ``` bash 
 
-        mkdir -p vendor/bundles/Knplabs/Bundle
-        cd !$
-        git clone git://github.com/docteurklein/TranslatoBundle.git
+    mkdir -p vendor/bundles/Knplabs/Bundle
+    cd !$
+    git clone git://github.com/docteurklein/TranslatoBundle.git
 
-        ```
+    ```
 
 2.  Add the bundle to your `AppKernel` class
 
-        ``` php
+    ``` php
 
-        // app/AppKernerl.php
-        public function registerBundles()
-        {
-            $bundles = array(
-                // ...
-                new Knplabs\Bundle\TranslatorBundle\KnplabsTranslatorBundle,
-                // ...
-            );
+    // app/AppKernerl.php
+    public function registerBundles()
+    {
+        $bundles = array(
             // ...
-        }
-        
-        ```
+            new Knplabs\Bundle\TranslatorBundle\KnplabsTranslatorBundle,
+            // ...
+        );
+        // ...
+    }
+    
+    ```
 
 3.  Add the Knplabs namespace to your autoloader
 
-        ```php
+    ```php
 
-        // app/autoload.php
-        $loader->registerNamespaces(array(
-            'Knplabs' => __DIR__.'/../vendor/bundles',
-            // your other namespaces
-        );
+    // app/autoload.php
+    $loader->registerNamespaces(array(
+        'Knplabs' => __DIR__.'/../vendor/bundles',
+        // your other namespaces
+    );
 
-        ```
+    ```
 
 4.  Add routing
 
-        ``` yaml
+    ``` yaml
 
-        // app/config/routing.yml
+    // app/config/routing.yml
 
-        knplabs_translator_admin:
-            resource: @KnplabsTranslatorBundle/Resources/config/routing/edition.yml
-                prefix:   /trans/admin
+    knplabs_translator_admin:
+        resource: @KnplabsTranslatorBundle/Resources/config/routing/edition.yml
+            prefix:   /trans/admin
 
-        knplabs_translator:
-            resource: @KnplabsTranslatorBundle/Resources/config/routing/routing.yml
-                prefix:   /trans
+    knplabs_translator:
+        resource: @KnplabsTranslatorBundle/Resources/config/routing/routing.yml
+            prefix:   /trans
 
-        ```
+    ```
 
 These route files provide the following routes:
 
-        [router] Current routes
-        Name                     Method  Pattern
-        knplabs_translator_list  GET     /trans/admin/list
-        knplabs_translator_get   GET     /trans/get/{id}/{domain}/{locale}
-        knplabs_translator_put   PUT|GET /trans/put/{id}/{domain}/{locale}
+    [router] Current routes
+    Name                     Method  Pattern
+    knplabs_translator_list  GET     /trans/admin/list
+    knplabs_translator_get   GET     /trans/get/{id}/{domain}/{locale}
+    knplabs_translator_put   PUT|GET /trans/put/{id}/{domain}/{locale}
 
 
 
@@ -94,15 +95,15 @@ Minimal configuration
 This bundle requires the activation of the core translator:
 
 
-        ``` yaml
+    ``` yaml
 
-        // app/config/config.yml
-        framework:
-            # ...
-            translator:    { fallback: en }
-            # ...
+    // app/config/config.yml
+    framework:
+        # ...
+        translator:    { fallback: en }
+        # ...
 
-        ```
+    ```
 
 
 Services
@@ -110,21 +111,22 @@ Services
 
 This bundle introduces those services:
 
-        translator.dumper.csv                    container Knplabs\Bundle\TranslatorBundle\Dumper\CsvDumper
-        translator.dumper.xliff                  container Knplabs\Bundle\TranslatorBundle\Dumper\XliffDumper
-        translator.dumper.yaml                   container Knplabs\Bundle\TranslatorBundle\Dumper\YamlDumper
-        translator.writer                        container Knplabs\Bundle\TranslatorBundle\Translation\Translator
+    translator.dumper.csv                    container Knplabs\Bundle\TranslatorBundle\Dumper\CsvDumper
+    translator.dumper.xliff                  container Knplabs\Bundle\TranslatorBundle\Dumper\XliffDumper
+    translator.dumper.yaml                   container Knplabs\Bundle\TranslatorBundle\Dumper\YamlDumper
+    translator.writer                        container Knplabs\Bundle\TranslatorBundle\Translation\Translator
 
-        controllers are services too:
+    controllers are services too:
 
-        knplabs_translator.controller.edition    request   Knplabs\Bundle\TranslatorBundle\Controller\EditionController
-        knplabs_translator.controller.translator request   Knplabs\Bundle\TranslatorBundle\Controller\TranslatorController
+    knplabs_translator.controller.edition    request   Knplabs\Bundle\TranslatorBundle\Controller\EditionController
+    knplabs_translator.controller.translator request   Knplabs\Bundle\TranslatorBundle\Controller\TranslatorController
 
 
 API
 ---
 
     ``` php
+
     class Knplabs\Bundle\TranslatorBundle\Translation\Translator extends Symfony\Bundle\FrameworkBundle\Translation\Translator
     {
         public function update($id, $value, $domain, $locale);
