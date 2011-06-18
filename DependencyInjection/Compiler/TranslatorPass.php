@@ -18,12 +18,12 @@ class TranslatorPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('translator.debug') || !$container->hasDefinition('translator.real')) {
+        if (!$container->hasDefinition('translator.writer') || !$container->hasDefinition('translator.real')) {
             return;
         }
 
         $translatorRealDefinition = $container->findDefinition('translator.real');
-        $translatorDefinition = $container->findDefinition('translator.debug');
+        $translatorDefinition = $container->findDefinition('translator.writer');
 
         $translatorDefinition->replaceArgument(2, $translatorRealDefinition->getArgument(2));
 

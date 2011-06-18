@@ -5,12 +5,12 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="translator.debug" class="Knplabs\Bundle\TranslatorBundle\Translation\Translator">
+        <service id="translator.writer" class="Knplabs\Bundle\TranslatorBundle\Translation\Translator">
             <argument type="service" id="service_container" />
             <argument type="service" id="translator.selector" />
             <argument type="collection" /> <!-- translation loaders -->
             <argument type="collection">
-                <argument key="cache_dir">null</argument> <!-- force reloading of cache -->
+                <argument key="cache_dir">null</argument> <!-- force no cache to access resources -->
                 <argument key="debug">%kernel.debug%</argument>
             </argument>
             <argument type="service" id="session" on-invalid="ignore" />
@@ -20,6 +20,9 @@
             <tag name="knplabs_translator.dumper"/>
         </service>
         <service id="translator.dumper.xliff" class="Knplabs\Bundle\TranslatorBundle\Dumper\XliffDumper">
+            <tag name="knplabs_translator.dumper"/>
+        </service>
+        <service id="translator.dumper.csv" class="Knplabs\Bundle\TranslatorBundle\Dumper\CsvDumper">
             <tag name="knplabs_translator.dumper"/>
         </service>
     </services>
