@@ -1,2 +1,5 @@
 knplabs_translator:
   title: Translator
+  list: List of translations
+  edit: Edit a translation
+
