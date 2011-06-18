@@ -1,0 +1,15 @@
+"i \r have \r
+carriage 
+returns!"; "i do not"
+"foo"; "bar"
+"foo.bar.baz"; "foobarbaz"
+#"bar"; "foo"
+"incorrect"; "number"; "columns"; "will"; "be"; "ignored"
+"incorrect"
+"test with double "" quotes"""; "test"
+"test with simple ' quotes'"; "test"
+"i \r have \r
+carriage 
+returns!" ; "i "
+do too!"
+"i have ; csv separators;"; "test"
