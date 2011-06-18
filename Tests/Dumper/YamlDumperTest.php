@@ -63,13 +63,14 @@ class YamlDumperTest extends DumperTest
             array('singleelementkey',   'not me'),
             array('foo.bar',            'i exist, but i\'m not a scalar node'),
             array('',                   'huh'),
+            array("i \r have \r\n carriage \n returns!",  'I do not'),
         );
     }
 
     public function provideValidKeys()
     {
         return array(
-            array('foo.bar.baz',        'bar!'),
+            array('foo.bar.baz',                          'bar!'),
         );
     }
 }
