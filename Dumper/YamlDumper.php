@@ -40,7 +40,7 @@ class YamlDumper implements DumperInterface
 
         $explodedId = explode('.', $id);
         foreach ($explodedId as $node) {
-            if (false === isset($finalNode[$node])) {
+            if (false === array_key_exists($node, $finalNode)) {
                 throw new InvalidTranslationKeyException(
                     sprintf('The key "%s" can not be found in "%s"', $id, $resource->getResource())
                 );
@@ -59,6 +59,7 @@ class YamlDumper implements DumperInterface
         $finalNode = $value;
         // dump yaml and switch to inline at 1000th level
         $yaml = Yaml::dump($translations, 1000);
+
         $result = file_put_contents($resource->getResource(), $yaml);
 
         return false !== $result;
