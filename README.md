@@ -105,6 +105,18 @@ This bundle requires the activation of the core translator:
 
     ```
 
+Additional configuration
+------------------------
+
+This bundle relies on the Ext Core library.
+You can decide wheter or not it will be included automatically.
+
+    ``` yaml
+
+    knplabs_translator:
+        include_vendor_assets: false # defaults to true
+
+    ```
 
 Services
 --------
@@ -129,6 +141,12 @@ API
 
     class Knplabs\Bundle\TranslatorBundle\Translation\Translator extends Symfony\Bundle\FrameworkBundle\Translation\Translator
     {
+
+        // equivalent of parent::trans
+        public function getTranslatedValue($id, array $parameters = array(), $domain = 'messages', $locale = null);
+
+        public function isTranslated($id, $domain, $locale);
+
         public function update($id, $value, $domain, $locale);
 
         public function getResources($locale, $domain);
@@ -161,7 +179,11 @@ Rest API
 
     ``` bash
 
-    curl -X PUT http://project-url/trans/put/foo.bar.baz/tests/en?value=translated+value
+    curl -X PUT http://project-url/trans/  \
+        -F 'id=foo.bar.baz' \
+        -F 'domain=messages' \
+        -F 'locale=en' \
+        -F 'value=translate value' 
 
     ```
 
@@ -169,6 +191,6 @@ Rest API
 
     ``` bash
 
-    curl -X GET http://project-url/trans/get/foo.bar.baz/tests/en
+    curl http://project-url/trans/foo.bar.baz/tests/en
 
     ```

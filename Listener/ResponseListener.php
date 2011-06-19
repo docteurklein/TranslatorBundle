@@ -30,11 +30,13 @@ class ResponseListener
 {
     private $assetHelper;
     private $router;
+    private $includeVendorAssets;
 
-    public function __construct(CoreAssetsHelper $assetHelper, RouterInterface $router)
+    public function __construct(CoreAssetsHelper $assetHelper, RouterInterface $router, $includeVendorAssets = true)
     {
         $this->assetHelper = $assetHelper;
         $this->router = $router;
+        $this->includeVendorAssets = $includeVendorAssets;
     }
 
     public function onCoreResponse(FilterResponseEvent $event)
@@ -74,8 +76,15 @@ class ResponseListener
 
         if (false !== $pos = $posrFunction($content, '</body>')) {
 
+            $scripts = '';
+            if(true === $this->includeVendorAssets) {
+                $url = $this->assetHelper->getUrl('/bundles/knplabstranslator/js/ext-core.js');
+                $scripts = sprintf('<script type="text/javascript" src="%s"></script>', $url)."\n";
+            }
+
             $url = $this->assetHelper->getUrl('/bundles/knplabstranslator/js/translator.js');
-            $scripts = sprintf('<script type="text/javascript" src="%s"></script>', $url);
+            $scripts .= sprintf('<script type="text/javascript" src="%s"></script>', $url)."\n";
+
 
             $script= <<<HTML
 <script type="text/javascript">
@@ -86,7 +95,7 @@ class ResponseListener
     });
 </script>
 HTML;
-            $scripts .= sprintf($script, $this->router->generate('knplabs_translator_put'));
+            $scripts .= sprintf($script, $this->router->generate('knplabs_translator_put'))."\n";
 
             $content = $substrFunction($content, 0, $pos).$scripts.$substrFunction($content, $pos);
             $response->setContent($content);
