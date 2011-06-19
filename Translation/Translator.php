@@ -45,9 +45,19 @@ class Translator extends BaseTranslator
             $locale = $this->getLocale();
         }
 
-        $trans = strtr($this->getCatalog($locale)->get((string) $id, $domain), $parameters);
+        return $this->wrap($id, $domain, $locale);
+    }
 
+    /**
+     * Wraps a translated value with [T id="%s" domain="%s" locale="%s"]%s[/T]
+     * Used to detect in-line edition of translations
+     *
+     * @return string
+     */
+    public function wrap($id, $domain = 'messages', $locale = null)
+    {
         $startTag = sprintf('[T id="%s" domain="%s" locale="%s"]', $id, $domain, $locale);
+        $trans = $this->getCatalog($locale)->get((string) $id, $domain);
 
         return sprintf('%s%s%s', $startTag, $trans, '[/T]');
     }
