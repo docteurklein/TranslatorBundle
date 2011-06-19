@@ -175,13 +175,6 @@ class Translator extends BaseTranslator
         return $success;
     }
 
-    protected function loadCatalogue($locale)
-    {
-        unset($this->catalogues[$locale]);
-
-        parent::loadCatalogue($locale);
-    }
-
     /**
      * Gets the resources that matches a domain and a locale on a particular catalog
      *
