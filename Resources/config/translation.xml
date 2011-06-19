@@ -25,5 +25,11 @@
         <service id="translator.dumper.csv" class="Knplabs\Bundle\TranslatorBundle\Dumper\CsvDumper">
             <tag name="knplabs_translator.dumper"/>
         </service>
+
+        <service id="translator.response.listener.assets_injecter" class="Knplabs\Bundle\TranslatorBundle\Listener\ResponseListener" scope="request">
+            <argument type="service" id="templating.helper.assets" />
+            <argument type="service" id="router" />
+            <tag name="kernel.listener" event="core.response" />
+        </service>
     </services>
 </container>
