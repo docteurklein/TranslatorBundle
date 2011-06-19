@@ -39,6 +39,29 @@ class Translator extends BaseTranslator
         return $translations;
     }
 
+    public function trans($id, array $parameters = array(), $domain = 'messages', $locale = null)
+    {
+        if (!isset($locale)) {
+            $locale = $this->getLocale();
+        }
+
+        $trans = strtr($this->getCatalog($locale)->get((string) $id, $domain), $parameters);
+
+        $startTag = sprintf('[T id="%s" domain="%s" locale="%s"]', $id, $domain, $locale);
+
+        return sprintf('%s%s%s', $startTag, $trans, '[/T]');
+    }
+
+    public function getTranslatedValue($id, array $parameters = array(), $domain = 'messages', $locale = null)
+    {
+        return parent::trans($id, $parameters, $domain, $locale);
+    }
+
+    public function isTranslated($id, $domain, $locale)
+    {
+        return $id === $this->getCatalog($locale)->get((string) $id, $domain);
+    }
+
     /**
      * Adds a dumper to the ones used to dump a resource
      */

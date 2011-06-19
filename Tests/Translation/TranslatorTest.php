@@ -41,7 +41,7 @@ class TranslatorTest extends DumperTest
 
         $translator->addDumper(new YamlDumper());
 
-        $this->assertEquals('foobarbaz', $translator->trans('foo.bar.baz', array(), 'tests', 'en'), 'translation uses initial value');
+        $this->assertEquals('foobarbaz', $translator->getTranslatedValue('foo.bar.baz', array(), 'tests', 'en'), 'translation uses initial value');
 
         $translator->update('foo.bar.baz', 'foofoofoo', 'tests', 'en');
         $updatedEnContent = <<<YAML
@@ -52,7 +52,7 @@ foo:
 YAML;
         $this->assertEquals($updatedEnContent, file_get_contents(__DIR__.'/../Fixtures/tests.en.yml'), 'file content is updated with new data');
 
-        $this->assertEquals('foofoofoo', $translator->trans('foo.bar.baz', array(), 'tests', 'en'), 'translation uses updated value');
+        $this->assertEquals('foofoofoo', $translator->getTranslatedValue('foo.bar.baz', array(), 'tests', 'en'), 'translation uses updated value');
     }
 
     public function testResourcesRetrieval()
