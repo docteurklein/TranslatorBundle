@@ -1,0 +1,122 @@
+<?php
+
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Knplabs\Bundle\TranslatorBundle\Listener;
+
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\templating\Helper\CoreAssetsHelper;
+use Symfony\Component\Routing\RouterInterface;
+
+/**
+ * ResponseListener injects the translator js code.
+ *
+ * The handle method must be connected to the onCoreResponse event.
+ *
+ * The js is only injected on well-formed HTML (with a proper </body> tag).
+ *
+ */
+class ResponseListener
+{
+    private $assetHelper;
+    private $router;
+
+    public function __construct(CoreAssetsHelper $assetHelper, RouterInterface $router)
+    {
+        $this->assetHelper = $assetHelper;
+        $this->router = $router;
+    }
+
+    public function onCoreResponse(FilterResponseEvent $event)
+    {
+        if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
+            return;
+        }
+
+        $response = $event->getResponse();
+        $request = $event->getRequest();
+
+        // do not capture redirects or modify XML HTTP Requests
+        if ($request->isXmlHttpRequest()) {
+            return;
+        }
+
+        $this->injectScripts($response);
+        $this->injectCss($response);
+    }
+
+    /**
+     * Injects the js scripts into the given Response.
+     *
+     * @param Response $response A Response instance
+     */
+    protected function injectScripts(Response $response)
+    {
+        if (function_exists('mb_stripos')) {
+            $posrFunction = 'mb_strripos';
+            $substrFunction = 'mb_substr';
+        } else {
+            $posrFunction = 'strripos';
+            $substrFunction = 'substr';
+        }
+
+        $content = $response->getContent();
+
+        if (false !== $pos = $posrFunction($content, '</body>')) {
+
+            $url = $this->assetHelper->getUrl('/bundles/knplabstranslator/js/translator.js');
+            $scripts = sprintf('<script type="text/javascript" src="%s"></script>', $url);
+
+            $script= <<<HTML
+<script type="text/javascript">
+    Ext.onReady(function() {
+        new Knplabs.Translator({
+            url: '%s'
+        });
+    });
+</script>
+HTML;
+            $scripts .= sprintf($script, $this->router->generate('knplabs_translator_put'));
+
+            $content = $substrFunction($content, 0, $pos).$scripts.$substrFunction($content, $pos);
+            $response->setContent($content);
+        }
+    }
+
+    /**
+     * Injects the css links into the given Response.
+     *
+     * @param Response $response A Response instance
+     */
+    protected function injectCss(Response $response)
+    {
+        if (function_exists('mb_stripos')) {
+            $posrFunction = 'mb_strripos';
+            $substrFunction = 'mb_substr';
+        } else {
+            $posrFunction = 'strripos';
+            $substrFunction = 'substr';
+        }
+
+        $content = $response->getContent();
+
+        if (false !== $pos = $posrFunction($content, '</head>')) {
+
+            $url = $this->assetHelper->getUrl('/bundles/knplabstranslator/css/translator.css');
+            $links = sprintf('<link rel="stylesheet" href="%s" />', $url);
+
+            $content = $substrFunction($content, 0, $pos).$links.$substrFunction($content, $pos);
+            $response->setContent($content);
+        }
+    }
+}
