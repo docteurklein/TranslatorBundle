@@ -83,9 +83,10 @@ These route files provide the following routes:
 
     [router] Current routes
     Name                     Method  Pattern
-    knplabs_translator_list  GET     /trans/admin/list
-    knplabs_translator_get   GET     /trans/get/{id}/{domain}/{locale}
-    knplabs_translator_put   PUT|GET /trans/put/{id}/{domain}/{locale}
+    knplabs_translator_list  GET    /trans/admin/list
+    knplabs_translator_get   GET    /trans/{id}/{domain}/{locale}
+    knplabs_translator_put   PUT    /trans/
+
 
 
 
