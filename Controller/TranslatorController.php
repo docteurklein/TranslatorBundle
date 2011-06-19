@@ -28,17 +28,21 @@ class TranslatorController
 
     public function getAction($id, $domain, $locale)
     {
-        $trans = $this->translator->trans($id, array(), $domain, $locale);
+        $trans = $this->translator->getTranslatedValue($id, array(), $domain, $locale);
 
         return new Response($trans);
     }
 
-    public function putAction($id, $domain, $locale)
+    public function putAction()
     {
-        $value = $this->request->get('value');
-        $success = $this->translator->update($id, $value, $domain, $locale);
-        $trans = $this->translator->trans($id, array(), $domain, $locale);
+        $id = $this->request->request->get('id');
+        $domain = $this->request->request->get('domain');
+        $locale = $this->request->request->get('locale');
+        $value = $this->request->request->get('value');
 
-        return new Response($trans);
+        $success = $this->translator->update($id, $value, $domain, $locale);
+        $trans = $this->translator->getTranslatedValue($id, array(), $domain, $locale);
+
+        return new Response(json_encode(array('success' => $success, 'trans' => $trans)));
     }
 }
