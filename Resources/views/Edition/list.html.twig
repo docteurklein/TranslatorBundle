@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h2>{{ 'List of translations'|trans({}, 'KnplabsTranslatorBundle') }}</h2>
+<h2>{{ 'knplabs_translator.list'|trans({}, 'KnplabsTranslatorBundle') }}</h2>
 
 {% for locale in translations|keys %}
 
@@ -20,7 +20,7 @@
         {% for source,target in translations[locale][domain] %}
 
             <span class="trans-source">{{ source }}</span>:
-            <span class="trans-target">{{ target }}</span>
+            <span class="trans-target">{{ target|trans({}, domain, locale) }}</span>
             <br />
 
         {% endfor %}
