@@ -145,6 +145,8 @@ API
         // equivalent of parent::trans
         public function getTranslatedValue($id, array $parameters = array(), $domain = 'messages', $locale = null);
 
+        public function wrap($id, $domain = 'messages', $locale = null);
+
         public function isTranslated($id, $domain, $locale);
 
         public function update($id, $value, $domain, $locale);

@@ -16,14 +16,15 @@
                 <li>{{ resource.getResource() }}</li>
             {% endfor %}
         </ul>
-
+        <table>
         {% for source,target in translations[locale][domain] %}
-
-            <span class="trans-source">{{ source }}</span>:
-            <span class="trans-target">{{ target|trans({}, domain, locale) }}</span>
-            <br />
+            <tr>
+                <td class="trans-source">{{ source }}</td>
+                <td class="trans-target">{{ translator.wrap(source, domain, locale) }}</td>
+            </tr>
 
         {% endfor %}
+        </table>
 
     {% endfor %}
 
