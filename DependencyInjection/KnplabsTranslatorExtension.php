@@ -16,5 +16,8 @@ class KnplabsTranslatorExtension extends Extension
         foreach (array('translation', 'controller') as $basename) {
             $loader->load(sprintf('%s.xml', $basename));
         }
+
+        // Use the "writer" translator instead of the default one
+        $container->setAlias('translator', 'translator.writer');
     }
 }
