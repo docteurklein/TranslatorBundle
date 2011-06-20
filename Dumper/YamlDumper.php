@@ -31,7 +31,7 @@ class YamlDumper implements DumperInterface
      */
     public function update(FileResource $resource, $id, $value)
     {
-        $translations = Yaml::load($resource->getResource());
+        $translations = Yaml::parse($resource->getResource());
         if (!is_array($translations)) {
             return false;
         }

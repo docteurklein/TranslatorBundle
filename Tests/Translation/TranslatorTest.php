@@ -51,8 +51,6 @@ foo:
 
 YAML;
         $this->assertEquals($updatedEnContent, file_get_contents(__DIR__.'/../Fixtures/tests.en.yml'), 'file content is updated with new data');
-
-        $this->assertEquals('foofoofoo', $translator->getTranslatedValue('foo.bar.baz', array(), 'tests', 'en'), 'translation uses updated value');
     }
 
     public function testResourcesRetrieval()
