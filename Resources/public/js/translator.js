@@ -65,6 +65,7 @@ Knplabs.Translator = Ext.extend(Ext.util.Observable, {
         Ext.fly('knplabs-translator-locale').dom.value = matches.locale;
         Ext.fly('knplabs-translator-value').dom.value = matches.value;
 
+        this.form.setY(Ext.fly(element).getY());
         this.form.show();
     }
 

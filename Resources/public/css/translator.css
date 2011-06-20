@@ -2,9 +2,8 @@
   position: absolute;
   margin: 0;
   padding: 1px 0px;
-  left: 0px;
+  right: 0px;
 
-  top: 50px;
   opacity: 0.80;
   filter: alpha(opacity : 80);
 
@@ -13,7 +12,7 @@
 }
 
 #knplabs-translator-container[id] {
-  position: fixed;
+  /*position: fixed;*/
 }
 
 #knplabs-translator-container .translator-form {
