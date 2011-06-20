@@ -43,7 +43,7 @@ Knplabs.Translator = Ext.extend(Ext.util.Observable, {
             }
         }, this);
 
-        Ext.get('knplabs-translator-form').on('submit', function(event) {
+        this.form.on('submit', function(event) {
 
             self = this;
             event.stopEvent();
@@ -73,7 +73,7 @@ Knplabs.Translator = Ext.extend(Ext.util.Observable, {
             id:'knplabs-translator-container'
             ,children: [{
                 tag: 'form'
-                ,id:'knplabs-translator-form' // this doesn't work in chrome
+                ,id:'knplabs-translator-form'
                 ,action: this.config.url
                 ,cls: 'translator-form'
                 ,children: [
