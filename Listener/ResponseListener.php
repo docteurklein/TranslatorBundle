@@ -78,11 +78,11 @@ class ResponseListener
 
             $scripts = '';
             if(true === $this->includeVendorAssets) {
-                $url = $this->assetHelper->getUrl('/bundles/knplabstranslator/js/ext-core.js');
+                $url = $this->assetHelper->getUrl('bundles/knplabstranslator/js/ext-core.js');
                 $scripts = sprintf('<script type="text/javascript" src="%s"></script>', $url)."\n";
             }
 
-            $url = $this->assetHelper->getUrl('/bundles/knplabstranslator/js/translator.js');
+            $url = $this->assetHelper->getUrl('bundles/knplabstranslator/js/translator.js');
             $scripts .= sprintf('<script type="text/javascript" src="%s"></script>', $url)."\n";
 
 
@@ -121,7 +121,7 @@ HTML;
 
         if (false !== $pos = $posrFunction($content, '</head>')) {
 
-            $url = $this->assetHelper->getUrl('/bundles/knplabstranslator/css/translator.css');
+            $url = $this->assetHelper->getUrl('bundles/knplabstranslator/css/translator.css');
             $links = sprintf('<link rel="stylesheet" href="%s" />', $url);
 
             $content = $substrFunction($content, 0, $pos).$links.$substrFunction($content, $pos);
