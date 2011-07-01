@@ -5,6 +5,7 @@ Knplabs.Translator = Ext.extend(Ext.util.Observable, {
 
     config: {}
     ,form: null
+    ,matchedNodes: []
 
     ,constructor: function(config) {
         this.addEvents('select');
@@ -12,33 +13,71 @@ Knplabs.Translator = Ext.extend(Ext.util.Observable, {
 
         Ext.apply(this.config, config, {
             url: ''
+            ,expr: /\[T id="(.*)" domain="(\w*)" locale="(\w*)"\](.*)\[\/T\]/
         });
 
         this.form = Ext.get(this.createForm());
         this.form.hide();
 
         this.bindEvents();
+
+        this.initTranslatableNodeList();
+    }
+
+    ,initTranslatableNodeList: function() {
+
+        var self = this;
+
+        var list = Ext.fly(document.body).select('*');
+        list.each(function(node) {
+
+            if(null === node.dom.firstChild) {
+                return;
+            }
+
+            if(self.isTranslatableNode(node.dom)) {
+                var content = node.dom.firstChild.nodeValue;
+                var matches = self.config.expr.exec(content);
+
+                self.matchedNodes.push({
+                     node:   node.dom
+                    ,id:     matches[1]
+                    ,domain: matches[2]
+                    ,locale: matches[3]
+                    ,value:  matches[4]
+                });
+
+                node.firstChild.nodeValue = matches.value;
+            }
+        });
+    }
+
+    ,isTranslatableNode: function(node) {
+        var content = node.firstChild.nodeValue;
+        return content.match(this.config.expr);
+    }
+
+    ,matches: function(target) {
+        var matches = null;
+        Ext.each(this.matchedNodes, function(match) {
+            if(match.node === target) {
+                matches = match;
+            }
+        });
+
+        return matches;
     }
 
     ,bindEvents: function() {
+
         Ext.get(document.body).on('dblclick', function(event, target) {
 
             if(null === target.firstChild) {
                 this.form.hide();
                 return;
             }
-            var expr = /\[T id="(.*)" domain="(\w*)" locale="(\w*)"\](.*)\[\/T\]/;
-            var content = target.firstChild.nodeValue;
-            if(content.match(expr)) {
-                matches = expr.exec(content);
 
-                matches = {
-                     id:     matches[1]
-                    ,domain: matches[2]
-                    ,locale: matches[3]
-                    ,value:  matches[4]
-                }
-
+            if(matches = this.matches(target)) {
                 this.select(target, matches);
             }
         }, this);
