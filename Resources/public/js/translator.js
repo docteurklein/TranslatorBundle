@@ -74,13 +74,15 @@ Knplabs.Translator = Ext.extend(Ext.util.Observable, {
 
         Ext.get(document.body).on('dblclick', function(event, target) {
 
-            if(null === target.firstChild) {
-                this.form.hide();
+            if(null === target.firstChild || this.form.contains(target)) {
                 return;
             }
 
             if(matches = this.matches(target)) {
                 this.select(target, matches);
+            }
+            else {
+                this.form.hide();
             }
         }, this);
 
