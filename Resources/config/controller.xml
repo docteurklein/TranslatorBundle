@@ -8,6 +8,7 @@
         <service id="knplabs_translator.controller.translator" class="Knplabs\Bundle\TranslatorBundle\Controller\TranslatorController" scope="request">
             <argument type="service" id="request" />
             <argument type="service" id="translator.writer" />
+            <argument type="service" id="logger" />
         </service>
 
         <service id="knplabs_translator.controller.edition" class="Knplabs\Bundle\TranslatorBundle\Controller\EditionController" scope="request">

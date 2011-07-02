@@ -19,11 +19,13 @@ class TranslatorController
 {
     private $translator;
     private $request;
+    private $logger;
 
-    public function __construct(Request $request, Translator $translator)
+    public function __construct(Request $request, Translator $translator, $logger)
     {
         $this->request = $request;
         $this->translator = $translator;
+        $this->logger = $logger;
     }
 
     public function getAction($id, $domain, $locale)
