@@ -31,10 +31,6 @@ Knplabs.Translator = Ext.extend(Ext.util.Observable, {
         var list = Ext.fly(document.body).select('*');
         list.each(function(node) {
 
-            if(null === node.dom.firstChild) {
-                return;
-            }
-
             if(self.isTranslatableNode(node.dom)) {
                 var content = node.dom.firstChild.nodeValue;
                 var matches = self.config.expr.exec(content);
@@ -47,13 +43,19 @@ Knplabs.Translator = Ext.extend(Ext.util.Observable, {
                     ,value:  matches[4]
                 });
 
-                node.firstChild.nodeValue = matches.value;
+                node.dom.firstChild.nodeValue = matches[4];
             }
         });
     }
 
     ,isTranslatableNode: function(node) {
+
+        if(node.firstChild === null
+        || node.firstChild.nodeType !== 3) {
+            return false;
+        }
         var content = node.firstChild.nodeValue;
+
         return content.match(this.config.expr);
     }
 
