@@ -34,7 +34,7 @@
             <argument type="service" id="templating.helper.assets" />
             <argument type="service" id="router" />
             <argument>%knplabs.translator.include_vendor_assets%</argument>
-            <tag name="kernel.listener" event="core.response" />
+            <tag name="kernel.event_listener" event="kernel.response" />
         </service>
     </services>
 </container>
