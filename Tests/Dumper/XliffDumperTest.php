@@ -55,6 +55,18 @@ class XliffDumperTest extends DumperTest
         $this->assertTrue($dumper->update($stub, $key, $value));
     }
 
+    public function testFinalContent()
+    {
+        $this->setup();
+        $dumper = new XliffDumper;
+        $stub = $this->getFileResourceStub(__DIR__.'/../Fixtures/tests.en.xliff');
+        foreach ($this->provideValidKeys() as $data) {
+            $dumper->update($stub, $data[0], $data[1]);
+        }
+
+        $this->assertFileEquals( __DIR__.'/../Fixtures/tests.en.expected.xliff',  __DIR__.'/../Fixtures/tests.en.xliff');
+    }
+
     public function provideInvalidKeys()
     {
         return array(

@@ -6,10 +6,6 @@
                 <source>foo.bar.baz</source>
                 <target>foobarbaz</target>
             </trans-unit>
-            <trans-unit id="2">
-                <source>i.dont.exist</source>
-                <target>foobarbaz</target>
-            </trans-unit>
             <trans-unit id="3">
                 <source>i have no dots</source>
                 <target>foobarbaz</target>

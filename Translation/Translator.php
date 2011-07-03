@@ -155,6 +155,9 @@ class Translator extends BaseTranslator
      */
     public function update($id, $value, $domain, $locale)
     {
+        if (empty($id)) {
+            throw new InvalidTranslationKeyException('Empty key not allowed');
+        }
         $resources = $this->getResources($locale, $domain);
 
         $success = false;

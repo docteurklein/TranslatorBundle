@@ -58,19 +58,19 @@ class YamlDumperTest extends DumperTest
     public function provideInvalidKeys()
     {
         return array(
-            array('i.dont.exist',       'I do'),
-            array('i have no dots',     'me neither'),
-            array('singleelementkey',   'not me'),
             array('foo.bar',            'i exist, but i\'m not a scalar node'),
             array('',                   'huh'),
-            array("i \r have \r\n carriage \n returns!",  'I do not'),
         );
     }
 
     public function provideValidKeys()
     {
         return array(
-            array('foo.bar.baz',                          'bar!'),
+            array('foo.bar.baz',        'bar!'),
+            array('i.dont.exist',       'I do'),
+            array('i have no dots',     'me neither'),
+            array('singleelementkey',   'not me'),
+            array("i \r have \r\n carriage \n returns!",  'I do not'),
         );
     }
 }

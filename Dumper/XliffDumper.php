@@ -7,6 +7,7 @@ use Knplabs\Bundle\TranslatorBundle\Exception\InvalidTranslationKeyException;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\CssSelector\XPathExpr;
 use \DOMDocument;
+use \DOMNode;
 use \DOMXPath;
 
 class XliffDumper implements DumperInterface
@@ -27,9 +28,10 @@ class XliffDumper implements DumperInterface
     {
         if('' === $id) {
             throw new InvalidTranslationKeyException(
-                sprintf('An empty key can not be used in "%s"', $id, $resource->getResource())
+                sprintf('An empty key can not be used in "%s"', $resource->getResource())
             );
         }
+        $current = libxml_use_internal_errors(true);
 
         $document = new DOMDocument;
         // avoid creating textNodes for each carriage return
@@ -40,37 +42,76 @@ class XliffDumper implements DumperInterface
         $document->load($resource->getResource());
 
         $xpath = new DOMXPath($document);
-        $escapedId = XPathExpr::xpathLiteral($id);
-        //$sources = $xpath->query(sprintf('//trans-unit/source[. =%s]', $escapedId));
-        //$sources = $xpath->query(sprintf('//trans-unit/source[contains(., %s)]', $escapedId));
-        $sources = $document->getElementsByTagName('source');
+        $xpath->registerNamespace('xliff', 'urn:oasis:names:tc:xliff:document:1.2');
 
-        if (false === $sources or 0 === $sources->length) {
-            throw new InvalidTranslationKeyException(
-                sprintf('The key "%s" can not be found in "%s"', $id, $resource->getResource())
-            );
-        }
+        $escapedId = XPathExpr::xpathLiteral($id);
+        $sources = $xpath->query(sprintf('//xliff:trans-unit/xliff:source[. =%s]', $escapedId));
 
         $updated = false;
         foreach ($sources as $source) {
-            // @TODO replace this with a xpath query!
-            if($source->nodeValue === $id) {
-                if ($target = $source->nextSibling) {
-                    $target->nodeValue = $value;
-                }
-                // @TODO create new target node if not existing yet ?
-                $updated = true;
+            if (null === $target = $source->nextSibling) {
+                $target = $document->createElement('target');
+                $source->parentNode->appendChild($target);
             }
+            $target->nodeValue = $value;
+            $updated = true;
         }
 
         if (false === $updated) {
-            throw new InvalidTranslationKeyException(
-                sprintf('The key "%s" can not be found in "%s"', $id, $resource->getResource())
-            );
+            //$number = $xpath->evaluate('//xliff:trans-unit[not(. <= preceding-sibling::xliff:trans-unit/@id) and not(. <= following-sibling::xliff:trans-unit/@id)]/@id');
+            //$number = $xpath->evaluate('//*[*/@id[not(*/@id > ./@id)]]/@id');
+
+            $number = 1;//$number->item(0);
+            $node = $this->create($document, $id, $value, $number);
+            $body = $xpath->query('//xliff:body')->item(0);
+            $body->appendChild($node);
         }
 
         $result = $document->save($resource->getResource());
 
+        if($errors = $this->getXmlErrors()) {
+            throw new \InvalidArgumentException(implode("\n", $errors));
+        }
+        libxml_use_internal_errors($current);
+
         return false !== $result;
+    }
+
+    private function create(DomDocument $document, $id, $value, $number)
+    {
+        $transUnit = $document->createElement('trans-unit');
+        $transUnit->setAttribute('id', $number);
+        $source = $document->createElement('source');
+        $source->nodeValue = $id;
+        $target = $document->createElement('target');
+        $target->nodeValue = $value;
+        $transUnit->appendChild($source);
+        $transUnit->appendChild($target);
+
+        return $transUnit;
+    }
+
+    /**
+     * Returns an array of XML errors.
+     *
+     * @return array
+     */
+    private function getXmlErrors()
+    {
+        $errors = array();
+        foreach (libxml_get_errors() as $error) {
+            $errors[] = sprintf('[%s %s] %s (in %s - line %d, column %d)',
+                LIBXML_ERR_WARNING == $error->level ? 'WARNING' : 'ERROR',
+                $error->code,
+                trim($error->message),
+                $error->file ? $error->file : 'n/a',
+                $error->line,
+                $error->column
+            );
+        }
+
+        libxml_clear_errors();
+
+        return $errors;
     }
 }

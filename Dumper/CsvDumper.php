@@ -36,29 +36,21 @@ class CsvDumper implements DumperInterface
 
         $updated = false;
         foreach ($lines as $data) {
-            if (is_array($data)) {
-                // it's a csv's line parsed array
-                if ($id === $data[0]) {
-                    // this line is the one we want to update
-                    $data[1] = $value;
-                    $updated = false !== fputcsv($fd, $data, ';');
-                }
-                else {
-                    fputcsv($fd, $data, ';', '"');
-                }
+            if(0 === strpos($data[0], '#')) {
+                continue;
             }
-            else {
-                // it's a commented line, put it rawly
-                fputs($fd, $data);
+            if ($id === $data[0]) {
+                // this line is the one we want to update
+                $data[1] = $value;
+                $updated = true;
             }
+            fputcsv($fd, $data, ';', '"');
         }
-        fclose($fd);
 
         if (false === $updated) {
-            throw new InvalidTranslationKeyException(
-                sprintf('The key "%s" can not be found in "%s"', $id, $resource->getResource())
-            );
+            $updated = false !== fputcsv($fd, array($id, $value), ';', '"');
         }
+        fclose($fd);
 
         return $updated;
     }
@@ -75,26 +67,14 @@ class CsvDumper implements DumperInterface
             throw new \InvalidArgumentException(sprintf('Error opening file "%s".', $resource->getResource()));
         }
 
-        $file->setFlags(\SplFileObject::SKIP_EMPTY);
+        $file->setFlags(\SplFileObject::SKIP_EMPTY | \SplFileObject::READ_CSV);
+        $file->setCsvControl(';');
 
         $lines = array();
         // iterate over the file's rows
         // fgets increments file descriptor to next line
-        while($data = $file->fgets()) {
-            if (substr($data, 0, 1) === '#') {
-                // # is first char, it's a comment
-                $lines[] = $data;
-            }
-            else {
-                $line = str_getcsv($data, ';');
-                if (2 === count($line)) {
-                    // only use parsed csv line if valid translation line ( 2 columns )
-                    $lines[] = $line;
-                }
-                else {
-                    $lines[] = $data;
-                }
-            }
+        while($data = $file->fgetcsv()) {
+            $lines[] = $data;
         }
 
         return $lines;

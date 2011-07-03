@@ -31,6 +31,11 @@ class YamlDumper implements DumperInterface
      */
     public function update(FileResource $resource, $id, $value)
     {
+        if('' === $id) {
+            throw new InvalidTranslationKeyException(
+                sprintf('An empty key can not be used in "%s"', $resource->getResource())
+            );
+        }
         $translations = Yaml::parse($resource->getResource());
         if (!is_array($translations)) {
             return false;
@@ -39,14 +44,18 @@ class YamlDumper implements DumperInterface
         $finalNode =& $translations;
 
         $explodedId = explode('.', $id);
-        foreach ($explodedId as $node) {
-            if (false === array_key_exists($node, $finalNode)) {
-                throw new InvalidTranslationKeyException(
-                    sprintf('The key "%s" can not be found in "%s"', $id, $resource->getResource())
-                );
+        $count = count($explodedId);
+        $i = 1;
+        foreach ($explodedId as $key) {
+            if (false === array_key_exists($key, $finalNode)) {
+                // node doesn't exist, create it
+                // if last node, create scalar node, else array
+                $node = ($i === $count) ? '' : array();
+                $finalNode[$key] = $node;
             }
             // working on references of the array elements
-            $finalNode =& $finalNode[$node];
+            $finalNode =& $finalNode[$key];
+            $i++;
         }
 
         if(is_array($finalNode)) {
