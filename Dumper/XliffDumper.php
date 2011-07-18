@@ -12,6 +12,8 @@ use \DOMXPath;
 
 class XliffDumper implements DumperInterface
 {
+    private $currentLibXmlErrorHandler;
+
     public function supports(FileResource $resource)
     {
         return 'xliff' === pathinfo($resource->getResource(), PATHINFO_EXTENSION);
@@ -31,17 +33,13 @@ class XliffDumper implements DumperInterface
                 sprintf('An empty key can not be used in "%s"', $resource->getResource())
             );
         }
-        $current = libxml_use_internal_errors(true);
-
-        $document = new DOMDocument;
-        // avoid creating textNodes for each carriage return
-        $document->preserveWhiteSpace = false;
-        // but preserve output indentation when dumping
-        $document->formatOutput = true;
-
-        $document->load($resource->getResource());
+        $document = $this->getDomDocument($resource);
 
         $xpath = new DOMXPath($document);
+        $xpath->registerNamespace('php', 'http://php.net/xpath');
+
+        $xpath->registerPHPFunctions('Knp\Bundle\TranslatorBundle\Dumper\dom_xpath_max');
+
         $xpath->registerNamespace('xliff', 'urn:oasis:names:tc:xliff:document:1.2');
 
         $escapedId = XPathExpr::xpathLiteral($id);
@@ -58,10 +56,9 @@ class XliffDumper implements DumperInterface
         }
 
         if (false === $updated) {
-            //$number = $xpath->evaluate('//xliff:trans-unit[not(. <= preceding-sibling::xliff:trans-unit/@id) and not(. <= following-sibling::xliff:trans-unit/@id)]/@id');
-            //$number = $xpath->evaluate('//*[*/@id[not(*/@id > ./@id)]]/@id');
+            $nodeList = $xpath->evaluate('//xliff:trans-unit/@id[php:function("Knp\Bundle\TranslatorBundle\Dumper\dom_xpath_max", ., //xliff:trans-unit/@id)]');
 
-            $number = 1;//$number->item(0);
+            $number = $nodeList->item(0)->value + 1;
             $node = $this->create($document, $id, $value, $number);
             $body = $xpath->query('//xliff:body')->item(0);
             $body->appendChild($node);
@@ -72,7 +69,7 @@ class XliffDumper implements DumperInterface
         if($errors = $this->getXmlErrors()) {
             throw new \InvalidArgumentException(implode("\n", $errors));
         }
-        libxml_use_internal_errors($current);
+        libxml_use_internal_errors($this->currentLibXmlErrorHandler);
 
         return false !== $result;
     }
@@ -89,6 +86,21 @@ class XliffDumper implements DumperInterface
         $transUnit->appendChild($target);
 
         return $transUnit;
+    }
+
+    private function getDomDocument(FileResource $resource)
+    {
+        $this->currentLibXmlErrorHandler = libxml_use_internal_errors(true);
+
+        $document = new DOMDocument;
+        // avoid creating textNodes for each carriage return
+        $document->preserveWhiteSpace = false;
+        // but preserve output indentation when dumping
+        $document->formatOutput = true;
+
+        $document->load($resource->getResource());
+
+        return $document;
     }
 
     /**
@@ -114,4 +126,13 @@ class XliffDumper implements DumperInterface
 
         return $errors;
     }
+}
+
+function dom_xpath_max($that, $nodes)
+{
+    usort($nodes, function($a, $b) {
+        return $b->value > $a->value;
+    });
+
+    return $that[0]->value == $nodes[0]->value;
 }

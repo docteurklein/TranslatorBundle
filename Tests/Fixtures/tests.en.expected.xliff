@@ -38,7 +38,7 @@
         <source><![CDATA[some xpath| < \ || ' "chars"!]]></source>
         <target>bar with double " quotes " too!</target>
       </trans-unit>
-      <trans-unit>
+      <trans-unit id="11">
         <source>i.dont.exist</source>
         <target>I do</target>
       </trans-unit>
