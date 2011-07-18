@@ -1,8 +1,4 @@
 knplabs_translator:
   title: Translator
-  list: 'It''s alive, ALIVE!'
-  edit: 'Edit a translation'
-  toto: 'It''s alive, ALIVE!'
-  tot:
-    test: 'It''s alive, ALIVE!'
-  list/toto: 'It''s alive, ALIVE!'
+  list: List of translations
+  edit: Edit a translation
