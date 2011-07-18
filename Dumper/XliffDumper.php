@@ -34,13 +34,7 @@ class XliffDumper implements DumperInterface
             );
         }
         $document = $this->getDomDocument($resource);
-
-        $xpath = new DOMXPath($document);
-        $xpath->registerNamespace('php', 'http://php.net/xpath');
-
-        $xpath->registerPHPFunctions('Knp\Bundle\TranslatorBundle\Dumper\dom_xpath_max');
-
-        $xpath->registerNamespace('xliff', 'urn:oasis:names:tc:xliff:document:1.2');
+        $xpath = $this->getDomXPath($document);
 
         $escapedId = XPathExpr::xpathLiteral($id);
         $sources = $xpath->query(sprintf('//xliff:trans-unit/xliff:source[. =%s]', $escapedId));
@@ -63,12 +57,9 @@ class XliffDumper implements DumperInterface
             $body = $xpath->query('//xliff:body')->item(0);
             $body->appendChild($node);
         }
-
+        $this->checkErrors();
         $result = $document->save($resource->getResource());
-
-        if($errors = $this->getXmlErrors()) {
-            throw new \InvalidArgumentException(implode("\n", $errors));
-        }
+        $this->checkErrors();
         libxml_use_internal_errors($this->currentLibXmlErrorHandler);
 
         return false !== $result;
@@ -101,6 +92,24 @@ class XliffDumper implements DumperInterface
         $document->load($resource->getResource());
 
         return $document;
+    }
+
+    private function getDomXPath(DOMDocument $document)
+    {
+        $xpath = new DOMXPath($document);
+        $xpath->registerNamespace('xliff', 'urn:oasis:names:tc:xliff:document:1.2');
+        $xpath->registerNamespace('php', 'http://php.net/xpath');
+        $xpath->registerPHPFunctions('Knp\Bundle\TranslatorBundle\Dumper\dom_xpath_max');
+
+        return $xpath;
+    }
+
+    private function checkErrors()
+    {
+        if($errors = $this->getXmlErrors()) {
+            libxml_use_internal_errors($this->currentLibXmlErrorHandler);
+            throw new \InvalidArgumentException(implode("\n", $errors));
+        }
     }
 
     /**
