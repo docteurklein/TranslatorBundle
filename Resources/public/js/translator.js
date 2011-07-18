@@ -1,7 +1,7 @@
 
-Ext.namespace('Knplabs');
+Ext.namespace('Knp');
 
-Knplabs.Translator = Ext.extend(Ext.util.Observable, {
+Knp.Translator = Ext.extend(Ext.util.Observable, {
 
     config: {}
     ,form: null

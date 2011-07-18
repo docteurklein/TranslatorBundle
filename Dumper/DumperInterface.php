@@ -1,6 +1,6 @@
 <?php
 
-namespace Knplabs\Bundle\TranslatorBundle\Dumper;
+namespace Knp\Bundle\TranslatorBundle\Dumper;
 
 use Symfony\Component\Config\Resource\FileResource;
 

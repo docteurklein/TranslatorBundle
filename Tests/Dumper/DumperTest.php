@@ -1,8 +1,8 @@
 <?php
 
-namespace Knplabs\Bundle\TranslatorBundle\Tests\Dumper;
+namespace Knp\Bundle\TranslatorBundle\Tests\Dumper;
 
-use Knplabs\Bundle\TranslatorBundle\Dumper\DumperInterface;
+use Knp\Bundle\TranslatorBundle\Dumper\DumperInterface;
 
 abstract class DumperTest extends \PHPUnit_Framework_TestCase
 {

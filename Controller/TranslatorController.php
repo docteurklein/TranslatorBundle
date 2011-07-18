@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Knplabs\Bundle\TranslatorBundle\Controller;
+namespace Knp\Bundle\TranslatorBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Translation\Translator;

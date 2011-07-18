@@ -1,6 +1,6 @@
 <?php
 
-namespace Knplabs\Bundle\TranslatorBundle\Exception;
+namespace Knp\Bundle\TranslatorBundle\Exception;
 
 class InvalidTranslationKeyException extends \Exception
 {

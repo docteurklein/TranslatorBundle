@@ -5,13 +5,13 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="knplabs_translator.controller.translator" class="Knplabs\Bundle\TranslatorBundle\Controller\TranslatorController" scope="request">
+        <service id="knplabs_translator.controller.translator" class="Knp\Bundle\TranslatorBundle\Controller\TranslatorController" scope="request">
             <argument type="service" id="request" />
             <argument type="service" id="translator.writer" />
             <argument type="service" id="logger" />
         </service>
 
-        <service id="knplabs_translator.controller.edition" class="Knplabs\Bundle\TranslatorBundle\Controller\EditionController" scope="request">
+        <service id="knplabs_translator.controller.edition" class="Knp\Bundle\TranslatorBundle\Controller\EditionController" scope="request">
             <argument type="service" id="request" />
             <argument type="service" id="translator.writer" />
             <argument type="service" id="templating" />

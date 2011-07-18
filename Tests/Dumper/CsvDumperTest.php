@@ -1,8 +1,8 @@
 <?php
 
-namespace Knplabs\Bundle\TranslatorBundle\Tests\Dumper;
+namespace Knp\Bundle\TranslatorBundle\Tests\Dumper;
 
-use Knplabs\Bundle\TranslatorBundle\Dumper\CsvDumper;
+use Knp\Bundle\TranslatorBundle\Dumper\CsvDumper;
 
 class CsvDumperTest extends DumperTest
 {
@@ -34,7 +34,7 @@ class CsvDumperTest extends DumperTest
     }
 
     /**
-     * @expectedException Knplabs\Bundle\TranslatorBundle\Exception\InvalidTranslationKeyException
+     * @expectedException Knp\Bundle\TranslatorBundle\Exception\InvalidTranslationKeyException
      * @dataProvider provideInvalidKeys
      */
     public function testUpdateWithInvalidKey($key, $value)

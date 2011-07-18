@@ -1,8 +1,8 @@
 <?php
 
-namespace Knplabs\Bundle\TranslatorBundle\Tests\Dumper;
+namespace Knp\Bundle\TranslatorBundle\Tests\Dumper;
 
-use Knplabs\Bundle\TranslatorBundle\Dumper\XliffDumper;
+use Knp\Bundle\TranslatorBundle\Dumper\XliffDumper;
 
 class XliffDumperTest extends DumperTest
 {
@@ -35,7 +35,7 @@ class XliffDumperTest extends DumperTest
     }
 
     /**
-     * @expectedException Knplabs\Bundle\TranslatorBundle\Exception\InvalidTranslationKeyException
+     * @expectedException Knp\Bundle\TranslatorBundle\Exception\InvalidTranslationKeyException
      * @dataProvider provideInvalidKeys
      */
     public function testUpdateWithInvalidKey($key, $value)

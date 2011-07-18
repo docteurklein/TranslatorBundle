@@ -1,9 +1,9 @@
 <?php
 
-namespace Knplabs\Bundle\TranslatorBundle\Dumper;
+namespace Knp\Bundle\TranslatorBundle\Dumper;
 
-use Knplabs\Bundle\TranslatorBundle\Dumper\DumperInterface;
-use Knplabs\Bundle\TranslatorBundle\Exception\InvalidTranslationKeyException;
+use Knp\Bundle\TranslatorBundle\Dumper\DumperInterface;
+use Knp\Bundle\TranslatorBundle\Exception\InvalidTranslationKeyException;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\CssSelector\XPathExpr;
 use \DOMDocument;

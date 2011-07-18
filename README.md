@@ -20,7 +20,7 @@ Install & setup the bundle
     
     ``` bash 
 
-    git submodule add git://github.com/docteurklein/TranslatorBundle.git vendor/bundles/Knplabs/Bundle/TranslatorBundle
+    git submodule add git://github.com/docteurklein/TranslatorBundle.git vendor/bundles/Knp/Bundle/TranslatorBundle
 
     ```
         
@@ -28,7 +28,7 @@ Install & setup the bundle
     
     ``` bash 
 
-    mkdir -p vendor/bundles/Knplabs/Bundle
+    mkdir -p vendor/bundles/Knp/Bundle
     cd !$
     git clone git://github.com/docteurklein/TranslatoBundle.git
 
@@ -43,7 +43,7 @@ Install & setup the bundle
     {
         $bundles = array(
             // ...
-            new Knplabs\Bundle\TranslatorBundle\KnplabsTranslatorBundle,
+            new Knp\Bundle\TranslatorBundle\KnpTranslatorBundle,
             // ...
         );
         // ...
@@ -51,13 +51,13 @@ Install & setup the bundle
     
     ```
 
-3.  Add the Knplabs namespace to your autoloader
+3.  Add the Knp namespace to your autoloader
 
     ```php
 
     // app/autoload.php
     $loader->registerNamespaces(array(
-        'Knplabs' => __DIR__.'/../vendor/bundles',
+        'Knp' => __DIR__.'/../vendor/bundles',
         // your other namespaces
     );
 
@@ -70,11 +70,11 @@ Install & setup the bundle
     // app/config/routing.yml
 
     knplabs_translator_admin:
-        resource: @KnplabsTranslatorBundle/Resources/config/routing/edition.yml
+        resource: @KnpTranslatorBundle/Resources/config/routing/edition.yml
             prefix:   /trans/admin
 
     knplabs_translator:
-        resource: @KnplabsTranslatorBundle/Resources/config/routing/routing.yml
+        resource: @KnpTranslatorBundle/Resources/config/routing/routing.yml
             prefix:   /trans
 
     ```
@@ -124,15 +124,15 @@ Services
 
 This bundle introduces those services:
 
-    translator.dumper.csv                    container Knplabs\Bundle\TranslatorBundle\Dumper\CsvDumper
-    translator.dumper.xliff                  container Knplabs\Bundle\TranslatorBundle\Dumper\XliffDumper
-    translator.dumper.yaml                   container Knplabs\Bundle\TranslatorBundle\Dumper\YamlDumper
-    translator.writer                        container Knplabs\Bundle\TranslatorBundle\Translation\Translator
+    translator.dumper.csv                    container Knp\Bundle\TranslatorBundle\Dumper\CsvDumper
+    translator.dumper.xliff                  container Knp\Bundle\TranslatorBundle\Dumper\XliffDumper
+    translator.dumper.yaml                   container Knp\Bundle\TranslatorBundle\Dumper\YamlDumper
+    translator.writer                        container Knp\Bundle\TranslatorBundle\Translation\Translator
 
     controllers are services too:
 
-    knplabs_translator.controller.edition    request   Knplabs\Bundle\TranslatorBundle\Controller\EditionController
-    knplabs_translator.controller.translator request   Knplabs\Bundle\TranslatorBundle\Controller\TranslatorController
+    knplabs_translator.controller.edition    request   Knp\Bundle\TranslatorBundle\Controller\EditionController
+    knplabs_translator.controller.translator request   Knp\Bundle\TranslatorBundle\Controller\TranslatorController
 
 
 API
@@ -140,7 +140,7 @@ API
 
     ``` php
 
-    class Knplabs\Bundle\TranslatorBundle\Translation\Translator extends Symfony\Bundle\FrameworkBundle\Translation\Translator
+    class Knp\Bundle\TranslatorBundle\Translation\Translator extends Symfony\Bundle\FrameworkBundle\Translation\Translator
     {
 
         // equivalent of parent::trans

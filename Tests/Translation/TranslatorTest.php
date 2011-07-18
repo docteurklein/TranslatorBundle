@@ -1,13 +1,13 @@
 <?php
 
-namespace Knplabs\Bundle\TranslatorBundle\Tests\Translation;
+namespace Knp\Bundle\TranslatorBundle\Tests\Translation;
 
 use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\Loader\ArrayLoader;
 use Symfony\Component\Translation\Loader\YamlFileLoader;
-use Knplabs\Bundle\TranslatorBundle\Translation\Translator;
-use Knplabs\Bundle\TranslatorBundle\Dumper\YamlDumper;
-use Knplabs\Bundle\TranslatorBundle\Tests\Dumper\DumperTest;
+use Knp\Bundle\TranslatorBundle\Translation\Translator;
+use Knp\Bundle\TranslatorBundle\Dumper\YamlDumper;
+use Knp\Bundle\TranslatorBundle\Tests\Dumper\DumperTest;
 use Symfony\Component\Translation\Loader\XliffFileLoader;
 
 class TranslatorTest extends DumperTest

@@ -1,11 +1,11 @@
 <?php
 
-namespace Knplabs\Bundle\TranslatorBundle\Dumper;
+namespace Knp\Bundle\TranslatorBundle\Dumper;
 
-use Knplabs\Bundle\TranslatorBundle\Dumper\DumperInterface;
+use Knp\Bundle\TranslatorBundle\Dumper\DumperInterface;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\Yaml\Yaml;
-use Knplabs\Bundle\TranslatorBundle\Exception\InvalidTranslationKeyException;
+use Knp\Bundle\TranslatorBundle\Exception\InvalidTranslationKeyException;
 
 class YamlDumper implements DumperInterface
 {

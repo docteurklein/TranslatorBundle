@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Knplabs\Bundle\TranslatorBundle\Translation;
+namespace Knp\Bundle\TranslatorBundle\Translation;
 
 use Symfony\Bundle\FrameworkBundle\Translation\Translator as BaseTranslator;
 use Symfony\Component\Config\Resource\ResourceInterface;
-use Knplabs\Bundle\TranslatorBundle\Dumper\DumperInterface;
+use Knp\Bundle\TranslatorBundle\Dumper\DumperInterface;
 use Symfony\Component\Translation\MessageCatalogue;
-use Knplabs\Bundle\TranslatorBundle\Exception\InvalidTranslationKeyException;
+use Knp\Bundle\TranslatorBundle\Exception\InvalidTranslationKeyException;
 
 /**
  * Translator that adds write capabilites on translation files

@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Knplabs\Bundle\TranslatorBundle\Controller;
+namespace Knp\Bundle\TranslatorBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Translation\Translator;
@@ -38,7 +38,7 @@ class EditionController
 
         $this->translator->setFallbackLocale($fallbackLocale);
 
-        return $this->templating->renderResponse('KnplabsTranslatorBundle:Edition:list.html.twig', array(
+        return $this->templating->renderResponse('KnpTranslatorBundle:Edition:list.html.twig', array(
             'translations' => $translations,
             'translator' => $this->translator
         ));

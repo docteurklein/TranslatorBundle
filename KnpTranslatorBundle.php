@@ -9,13 +9,13 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Knplabs\Bundle\TranslatorBundle;
+namespace Knp\Bundle\TranslatorBundle;
 
-use Knplabs\Bundle\TranslatorBundle\DependencyInjection\Compiler\TranslatorPass;
+use Knp\Bundle\TranslatorBundle\DependencyInjection\Compiler\TranslatorPass;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class KnplabsTranslatorBundle extends Bundle
+class KnpTranslatorBundle extends Bundle
 {
     public function build(ContainerBuilder $container)
     {

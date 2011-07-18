@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Knplabs\Bundle\TranslatorBundle\Listener;
+namespace Knp\Bundle\TranslatorBundle\Listener;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -78,18 +78,18 @@ class ResponseListener
 
             $scripts = '';
             if(true === $this->includeVendorAssets) {
-                $url = $this->assetHelper->getUrl('bundles/knplabstranslator/js/ext-core.js');
+                $url = $this->assetHelper->getUrl('bundles/knptranslator/js/ext-core.js');
                 $scripts = sprintf('<script type="text/javascript" src="%s"></script>', $url)."\n";
             }
 
-            $url = $this->assetHelper->getUrl('bundles/knplabstranslator/js/translator.js');
+            $url = $this->assetHelper->getUrl('bundles/knptranslator/js/translator.js');
             $scripts .= sprintf('<script type="text/javascript" src="%s"></script>', $url)."\n";
 
 
             $script= <<<HTML
 <script type="text/javascript">
     Ext.onReady(function() {
-        new Knplabs.Translator({
+        new Knp.Translator({
             url: '%s'
         });
     });
@@ -121,7 +121,7 @@ HTML;
 
         if (false !== $pos = $posrFunction($content, '</head>')) {
 
-            $url = $this->assetHelper->getUrl('bundles/knplabstranslator/css/translator.css');
+            $url = $this->assetHelper->getUrl('bundles/knptranslator/css/translator.css');
             $links = sprintf('<link rel="stylesheet" href="%s" />', $url);
 
             $content = $substrFunction($content, 0, $pos).$links.$substrFunction($content, $pos);

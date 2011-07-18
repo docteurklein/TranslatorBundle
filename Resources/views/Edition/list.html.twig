@@ -1,8 +1,8 @@
-{% extends 'KnplabsTranslatorBundle::layout.html.twig' %}
+{% extends 'KnpTranslatorBundle::layout.html.twig' %}
 
 {% block content %}
 
-<h1>{{ 'knplabs_translator.list'|trans({}, 'KnplabsTranslatorBundle') }}</h1>
+<h1>{{ 'knplabs_translator.list'|trans({}, 'KnpTranslatorBundle') }}</h1>
 
 {% for locale in translations|keys %}
 

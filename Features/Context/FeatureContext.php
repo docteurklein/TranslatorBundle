@@ -1,6 +1,6 @@
 <?php
 
-namespace Knplabs\Bundle\TranslatorBundle\Features\Context;
+namespace Knp\Bundle\TranslatorBundle\Features\Context;
 
 use Behat\BehatBundle\Context\MinkContext;
 use Behat\Behat\Context\ClosuredContextInterface,

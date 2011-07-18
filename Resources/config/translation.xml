@@ -9,7 +9,7 @@
     </parameters>
 
     <services>
-        <service id="translator.writer" class="Knplabs\Bundle\TranslatorBundle\Translation\Translator">
+        <service id="translator.writer" class="Knp\Bundle\TranslatorBundle\Translation\Translator">
             <argument type="service" id="service_container" />
             <argument type="service" id="translator.selector" />
             <argument type="collection" /> <!-- translation loaders -->
@@ -20,17 +20,17 @@
             <argument type="service" id="session" on-invalid="ignore" />
         </service>
 
-        <service id="translator.dumper.yaml" class="Knplabs\Bundle\TranslatorBundle\Dumper\YamlDumper">
+        <service id="translator.dumper.yaml" class="Knp\Bundle\TranslatorBundle\Dumper\YamlDumper">
             <tag name="knplabs_translator.dumper"/>
         </service>
-        <service id="translator.dumper.xliff" class="Knplabs\Bundle\TranslatorBundle\Dumper\XliffDumper">
+        <service id="translator.dumper.xliff" class="Knp\Bundle\TranslatorBundle\Dumper\XliffDumper">
             <tag name="knplabs_translator.dumper"/>
         </service>
-        <service id="translator.dumper.csv" class="Knplabs\Bundle\TranslatorBundle\Dumper\CsvDumper">
+        <service id="translator.dumper.csv" class="Knp\Bundle\TranslatorBundle\Dumper\CsvDumper">
             <tag name="knplabs_translator.dumper"/>
         </service>
 
-        <service id="translator.response.listener.assets_injecter" class="Knplabs\Bundle\TranslatorBundle\Listener\ResponseListener" scope="request">
+        <service id="translator.response.listener.assets_injecter" class="Knp\Bundle\TranslatorBundle\Listener\ResponseListener" scope="request">
             <argument type="service" id="templating.helper.assets" />
             <argument type="service" id="router" />
             <argument>%knplabs.translator.include_vendor_assets%</argument>

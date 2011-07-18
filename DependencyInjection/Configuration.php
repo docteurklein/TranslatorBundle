@@ -1,6 +1,6 @@
 <?php
 
-namespace Knplabs\Bundle\TranslatorBundle\DependencyInjection;
+namespace Knp\Bundle\TranslatorBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder,
     Symfony\Component\Config\Definition\ConfigurationInterface;

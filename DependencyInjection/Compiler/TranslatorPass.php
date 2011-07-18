@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Knplabs\Bundle\TranslatorBundle\DependencyInjection\Compiler;
+namespace Knp\Bundle\TranslatorBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;

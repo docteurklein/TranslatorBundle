@@ -8,6 +8,6 @@ use Symfony\Component\ClassLoader\UniversalClassLoader;
 $loader = new UniversalClassLoader();
 $loader->registerNamespaces(array(
     'Symfony'                => array($vendorDir.'/symfony/src', $vendorDir.'/bundles'),
-    'Knplabs'                => $vendorDir.'/bundles',
+    'Knp'                    => $vendorDir.'/bundles',
 ));
 $loader->register();

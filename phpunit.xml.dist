@@ -19,7 +19,7 @@
     </php>
 -->
     <testsuites>
-        <testsuite name="KnplabsTranslatorBundle">
+        <testsuite name="KnpTranslatorBundle">
             <directory suffix="Test.php">./Tests</directory>
         </testsuite>
     </testsuites>
