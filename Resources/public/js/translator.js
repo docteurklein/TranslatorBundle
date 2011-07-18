@@ -17,11 +17,17 @@ Knp.Translator = Ext.extend(Ext.util.Observable, {
         });
 
         this.form = Ext.get(this.createForm());
-        this.form.hide();
+        this.hide();
 
         this.bindEvents();
 
         this.initTranslatableNodeList();
+    }
+
+    ,hide: function() {
+        this.form.hide(true);
+
+        var el = this.form.select('.error').hide(true);
     }
 
     ,initTranslatableNodeList: function() {
@@ -82,7 +88,7 @@ Knp.Translator = Ext.extend(Ext.util.Observable, {
                 this.select(target, matches);
             }
             else {
-                this.form.hide();
+                this.hide();
             }
         }, this);
 
@@ -94,7 +100,14 @@ Knp.Translator = Ext.extend(Ext.util.Observable, {
                 form: 'knplabs-translator-form'
                 ,method: 'POST'
                 ,success: function() {
-                    self.form.hide();
+                    self.hide();
+                }
+                ,failure: function(xhr) {
+                    json = Ext.util.JSON.decode(xhr.responseText);
+
+                    var el = self.form.select('.error').item(0);
+                    el.dom.firstChild.nodeValue = json.error;
+                    el.show(true);
                 }
             });
         }, this);
@@ -108,8 +121,10 @@ Knp.Translator = Ext.extend(Ext.util.Observable, {
         Ext.fly('knplabs-translator-locale').dom.value = matches.locale;
         Ext.fly('knplabs-translator-value').dom.value = matches.value;
 
+        var el = this.form.select('.error').hide(true);
+
         this.form.setY(Ext.fly(element).getY());
-        this.form.show();
+        this.form.show(true);
     }
 
     ,createForm: function() {
@@ -132,6 +147,11 @@ Knp.Translator = Ext.extend(Ext.util.Observable, {
                     ,{ tag: 'input', type: 'submit', value: 'Submit' }
                     ,{ tag: 'input', type: 'hidden', name: '_method', value: 'PUT' }
                 ]
+            }
+            ,{
+                 tag: 'div'
+                ,cls: 'error'
+                ,html: ' '
             }]
         });
 

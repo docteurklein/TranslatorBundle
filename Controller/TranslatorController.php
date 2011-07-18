@@ -58,6 +58,6 @@ class TranslatorController
             'success' => $success,
             'trans' => $trans,
             'error' => $error,
-        )));
+        )), $error ? 500 : 200, array('Content-Type' => 'application/json'));
     }
 }

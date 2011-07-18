@@ -29,3 +29,11 @@
     margin-right: 20px;
 }
 
+
+#knplabs-translator-container .error {
+    color: #D8000C;
+    background-color: #FFBABA;
+    border: 1px solid;
+    margin: 10px 0px;
+    padding:15px 10px 15px 50px;
+}
