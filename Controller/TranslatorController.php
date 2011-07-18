@@ -14,6 +14,7 @@ namespace Knp\Bundle\TranslatorBundle\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\HttpFoundation\Request;
+use Knp\Bundle\TranslatorBundle\Exception\InvalidTranslationKeyException;
 
 class TranslatorController
 {
@@ -42,9 +43,21 @@ class TranslatorController
         $locale = $this->request->request->get('locale');
         $value = $this->request->request->get('value');
 
-        $success = $this->translator->update($id, $value, $domain, $locale);
-        $trans = $this->translator->getTranslatedValue($id, array(), $domain, $locale);
+        $error = null;
+        try {
+            $success = $this->translator->update($id, $value, $domain, $locale);
+            $trans = $value;
+        }
+        catch (InvalidTranslationKeyException $e) {
+            $success = false;
+            $trans = $this->translator->getTranslatedValue($id, array(), $domain, $locale);
+            $error = $e->getMessage();
+        }
 
-        return new Response(json_encode(array('success' => $success, 'trans' => $trans)));
+        return new Response(json_encode(array(
+            'success' => $success,
+            'trans' => $trans,
+            'error' => $error,
+        )));
     }
 }

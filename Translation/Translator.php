@@ -163,13 +163,7 @@ class Translator extends BaseTranslator
         $success = false;
         foreach ($resources as $resource) {
             if ($dumper = $this->getDumper($resource)) {
-                // @TODO finally, should we throw an exception ?
-                try {
-                    $success = $dumper->update($resource, $id, $value);
-                }
-                catch (InvalidTranslationKeyException $e) {
-                    $success = false;
-                }
+                $success = $dumper->update($resource, $id, $value);
             }
         }
 

@@ -46,7 +46,13 @@ class YamlDumper implements DumperInterface
         $explodedId = explode('.', $id);
         $count = count($explodedId);
         $i = 1;
+        $lastKey = '';
         foreach ($explodedId as $key) {
+            if( ! is_array($finalNode)) {
+                throw new InvalidTranslationKeyException(
+                    sprintf('The part "%s" of key "%s" is a scalar yaml node in "%s"', $lastKey, $id, $resource->getResource())
+                );
+            }
             if (false === array_key_exists($key, $finalNode)) {
                 // node doesn't exist, create it
                 // if last node, create scalar node, else array
@@ -55,6 +61,7 @@ class YamlDumper implements DumperInterface
             }
             // working on references of the array elements
             $finalNode =& $finalNode[$key];
+            $lastKey = $key;
             $i++;
         }
 
