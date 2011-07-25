@@ -78,7 +78,7 @@ Knp.Translator = Ext.extend(Ext.util.Observable, {
 
     ,bindEvents: function() {
 
-        Ext.get(document.body).on('dblclick', function(event, target) {
+        Ext.get(document.body).on('mouseover', function(event, target) {
 
             if(null === target.firstChild || this.form.contains(target)) {
                 return;
@@ -90,7 +90,9 @@ Knp.Translator = Ext.extend(Ext.util.Observable, {
             else {
                 this.hide();
             }
-        }, this);
+        }, this, {
+            buffer: 1000
+        });
 
         this.form.on('submit', function(event) {
 
@@ -125,6 +127,9 @@ Knp.Translator = Ext.extend(Ext.util.Observable, {
 
         this.form.setY(Ext.fly(element).getY());
         this.form.show(true);
+
+        Ext.fly('knplabs-translator-value').dom.focus();
+        Ext.fly('knplabs-translator-value').dom.select();
     }
 
     ,createForm: function() {
