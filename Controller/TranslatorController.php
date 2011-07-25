@@ -31,7 +31,7 @@ class TranslatorController
 
     public function getAction($id, $domain, $locale)
     {
-        $trans = $this->translator->getTranslatedValue($id, array(), $domain, $locale);
+        $trans = $this->translator->trans($id, array(), $domain, $locale);
 
         return new Response($trans);
     }
@@ -50,7 +50,7 @@ class TranslatorController
         }
         catch (InvalidTranslationKeyException $e) {
             $success = false;
-            $trans = $this->translator->getTranslatedValue($id, array(), $domain, $locale);
+            $trans = $this->translator->trans($id, array(), $domain, $locale);
             $error = $e->getMessage();
         }
 

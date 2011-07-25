@@ -41,7 +41,7 @@ class TranslatorTest extends DumperTest
 
         $translator->addDumper(new YamlDumper());
 
-        $this->assertEquals('foobarbaz', $translator->getTranslatedValue('foo.bar.baz', array(), 'tests', 'en'), 'translation uses initial value');
+        $this->assertEquals('foobarbaz', $translator->trans('foo.bar.baz', array(), 'tests', 'en'), 'translation uses initial value');
 
         $translator->update('foo.bar.baz', 'foofoofoo', 'tests', 'en');
         $updatedEnContent = <<<YAML

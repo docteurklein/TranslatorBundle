@@ -20,7 +20,8 @@
         {% for source,target in translations[locale][domain] %}
             <tr>
                 <td class="trans-source">{{ source }}</td>
-                <td class="trans-target">{{ translator.wrap(source, domain, locale) }}</td>
+                {% set trans = translator.trans(source, {}, domain, locale) %}
+                <td class="trans-target">{{ translatorHelper.wrap(source, trans, domain, locale) }}</td>
             </tr>
 
         {% endfor %}

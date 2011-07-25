@@ -12,7 +12,6 @@ class KnpTranslatorExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container)
     {
-
         $processor = new Processor();
         $configuration = new Configuration();
         $config = $processor->processConfiguration($configuration, $configs);
@@ -31,5 +30,6 @@ class KnpTranslatorExtension extends Extension
 
         // Use the "writer" translator instead of the default one
         $container->setAlias('translator', 'translator.writer');
+        $container->setAlias('templating.helper.translator', 'templating.helper.translator.writer');
     }
 }

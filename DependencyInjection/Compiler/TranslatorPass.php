@@ -29,7 +29,10 @@ class TranslatorPass implements CompilerPassInterface
 
         foreach($translatorRealDefinition->getMethodCalls() as $methodCall) {
             $translatorDefinition->addMethodCall($methodCall[0], $methodCall[1]);
+            // use resources from translator.real to add available locales
             if ('addResource' === $methodCall[0]) {
+                // $methodCall[1][2] is the locale
+                // @see FrameworkBundle\DependencyInjection\FrameworkExtension::registerTranslatorConfiguration
                 $translatorDefinition->addMethodCall('addLocale', array($methodCall[1][2]));
             }
         }

@@ -15,17 +15,20 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Symfony\Bundle\FrameworkBundle\Templating\Helper\TranslatorHelper;
 
 class EditionController
 {
     private $translator;
+    private $translatorHelper;
     private $request;
     private $templating;
 
-    public function __construct(Request $request, Translator $translator, EngineInterface $templating)
+    public function __construct(Request $request, Translator $translator, TranslatorHelper $translatorHelper, EngineInterface $templating)
     {
         $this->request = $request;
         $this->translator = $translator;
+        $this->translatorHelper = $translatorHelper;
         $this->templating = $templating;
     }
 
@@ -40,7 +43,8 @@ class EditionController
 
         return $this->templating->renderResponse('KnpTranslatorBundle:Edition:list.html.twig', array(
             'translations' => $translations,
-            'translator' => $this->translator
+            'translatorHelper' => $this->translatorHelper,
+            'translator' => $this->translator,
         ));
     }
 }
