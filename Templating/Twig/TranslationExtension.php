@@ -19,12 +19,12 @@ class TranslationExtension extends BaseTranslationExtension
         $this->translatorHelper = $translatorHelper;
     }
 
-    public function trans($message, array $arguments = array(), $domain = "messages")
+    public function trans($message, array $arguments = array(), $domain = 'messages', $locale = null)
     {
         return $this->translatorHelper->trans($message, $arguments, $domain);
     }
 
-    public function transchoice($message, $count, array $arguments = array(), $domain = "messages")
+    public function transchoice($message, $count, array $arguments = array(), $domain = 'messages', $locale = null)
     {
         return $this->translatorHelper->transChoice($message, $count, array_merge(array('%count%' => $count), $arguments), $domain);
     }
