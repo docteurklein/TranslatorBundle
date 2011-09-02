@@ -70,6 +70,7 @@ Knp.Translator = Ext.extend(Ext.util.Observable, {
         Ext.each(this.matchedNodes, function(match) {
             if(match.node === target) {
                 matches = match;
+                return false; // stop on first matched result
             }
         });
 
