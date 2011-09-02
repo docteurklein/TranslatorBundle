@@ -26,7 +26,7 @@ use Knp\Bundle\TranslatorBundle\Exception\InvalidTranslationKeyException;
 class Translator extends BaseTranslator
 {
     private $dumpers = array();
-    private $locales;
+    private $locales = array();
     private $fallbackLocale;
 
     public function all()
