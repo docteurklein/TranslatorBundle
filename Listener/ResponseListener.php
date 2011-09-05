@@ -88,11 +88,12 @@ class ResponseListener
 
             $script= <<<HTML
 <script type="text/javascript">
-    Ext.onReady(function() {
+    Ext.onReady(knpInitTranslator);
+    knpInitTranslator(){
         new Knp.Translator({
             url: '%s'
-        });
-    });
+        });        
+    }
 </script>
 HTML;
             $scripts .= sprintf($script, $this->router->generate('knplabs_translator_put'))."\n";
