@@ -28,4 +28,10 @@ class TranslationExtension extends BaseTranslationExtension
     {
         return $this->translatorHelper->transChoice($message, $count, array_merge(array('%count%' => $count), $arguments), $domain);
     }
+        
+    public function getTranslator()
+    {
+        return $this->translatorHelper;
+    }    
+    
 }
