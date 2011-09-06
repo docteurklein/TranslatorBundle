@@ -1,4 +1,3 @@
-
 Ext.namespace('Knp');
 
 Knp.Translator = Ext.extend(Ext.util.Observable, {
@@ -23,7 +22,9 @@ Knp.Translator = Ext.extend(Ext.util.Observable, {
 
         this.initTranslatableNodeList();
     }
-
+    ,reinitialize: function() {
+        this.initTranslatableNodeList();
+    }
     ,hide: function() {
         this.form.hide(true);
 
