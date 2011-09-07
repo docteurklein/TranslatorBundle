@@ -88,8 +88,9 @@ class ResponseListener
 
             $script= <<<HTML
 <script type="text/javascript">
+    var knpTranslator;
     Ext.onReady(function() {
-        new Knp.Translator({
+        knpTranslator = new Knp.Translator({
             url: '%s'
         });
     });
