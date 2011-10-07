@@ -38,20 +38,24 @@ class TranslatorController
 
     public function putAction()
     {
-        $id = $this->request->request->get('id');
-        $domain = $this->request->request->get('domain');
-        $locale = $this->request->request->get('locale');
-        $value = $this->request->request->get('value');
+        $translations = $this->request->request->get('trans');
 
-        $error = null;
-        try {
-            $success = $this->translator->update($id, $value, $domain, $locale);
-            $trans = $value;
-        }
-        catch (InvalidTranslationKeyException $e) {
-            $success = false;
-            $trans = $this->translator->trans($id, array(), $domain, $locale);
-            $error = $e->getMessage();
+        foreach($translations as $trans) {
+            $id     = @$trans['id'];
+            $domain = @$trans['domain'];
+            $locale = @$trans['locale'];
+            $value  = @$trans['value'];
+
+            $error = null;
+            try {
+                $success = $this->translator->update($id, $value, $domain, $locale);
+                $trans = $value;
+            }
+            catch (InvalidTranslationKeyException $e) {
+                $success = false;
+                $trans = $this->translator->trans($id, array(), $domain, $locale);
+                $error = $e->getMessage();
+            }
         }
 
         return new Response(json_encode(array(

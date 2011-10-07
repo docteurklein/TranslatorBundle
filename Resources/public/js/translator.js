@@ -12,9 +12,8 @@ Knp.Translator = Ext.extend(Ext.util.Observable, {
 
         Ext.apply(this.config, config, {
             url: ''
-            ,expr: /\[T id="(.*)" domain="(\w*)" locale="(\w*)"\](.*)\[\/T\]/
+            ,expr: /\[T id="([^"]*)" domain="([^"]*)" locale="([^"]*)"\](.*?)\[\/T\]/
         });
-
         this.form = Ext.get(this.createForm());
         this.hide();
 
@@ -22,9 +21,11 @@ Knp.Translator = Ext.extend(Ext.util.Observable, {
 
         this.initTranslatableNodeList();
     }
+
     ,reinitialize: function() {
         this.initTranslatableNodeList();
     }
+
     ,hide: function() {
         this.form.hide(true);
 
@@ -35,43 +36,78 @@ Knp.Translator = Ext.extend(Ext.util.Observable, {
 
         var self = this;
 
-        var list = Ext.fly(document.body).select('*');
+        var list = Ext.fly(document.body).select('*'); // ouch
         list.each(function(node) {
 
-            if(self.isTranslatableNode(node.dom)) {
-                var content = node.dom.firstChild.nodeValue;
-                var matches = self.config.expr.exec(content);
+            self.handleNode(node.dom);
+        });
+    }
 
-                self.matchedNodes.push({
-                     node:   node.dom
-                    ,id:     matches[1]
-                    ,domain: matches[2]
-                    ,locale: matches[3]
-                    ,value:  matches[4]
-                });
+    ,handleNode: function(node) {
 
-                node.dom.firstChild.nodeValue = matches[4];
+        var self = this;
+
+        // node content
+        if(node.firstChild !== null && node.firstChild.nodeType === 3) { // Node.TEXT_NODE === 3
+            var content = node.firstChild.nodeValue;
+            var result = this.checkTranslatableText(content, node);
+            if(false !== result) {
+                node.firstChild.nodeValue = result;
+            }
+        }
+
+        // node attributes
+        var matched = false;
+        Ext.each(node.attributes, function(attribute) {
+            var result = self.checkTranslatableText(attribute.value, node);
+            if(false !== result) {
+                attribute.value = result;
             }
         });
     }
 
-    ,isTranslatableNode: function(node) {
+    ,checkTranslatableText: function(text, node) {
 
-        if(node.firstChild === null
-        || node.firstChild.nodeType !== 3) {
+        var self = this;
+        var matches = this.config.expr.exec(text);
+        if(matches === null) {
             return false;
         }
-        var content = node.firstChild.nodeValue;
+        result = matches[4];
 
-        return content.match(this.config.expr);
+        var newText = matches.input.replace(matches[0], '');
+        while (newText.trim()) { // multiple trans tags in same string
+            newMatches = this.config.expr.exec(newText);
+            newText = '';
+            if(newMatches !== null) {
+                this.addMatch(node, newMatches);
+                newText = newMatches.input.replace(newMatches[0], '');
+                result += newMatches[4];
+            }
+        }
+
+        this.addMatch(node, matches);
+
+        return result;
+    }
+
+    ,addMatch: function(node, matches)
+    {
+        this.matchedNodes.push({
+             node:   node
+            ,id:     matches[1]
+            ,domain: matches[2]
+            ,locale: matches[3]
+            ,value:  matches[4]
+        });
+
     }
 
     ,matches: function(target) {
-        var matches = null;
+        var matches = [];
         Ext.each(this.matchedNodes, function(match) {
             if(match.node === target) {
-                matches = match;
-                return false; // stop on first matched result
+                matches.push(match);
             }
         });
 
@@ -80,21 +116,12 @@ Knp.Translator = Ext.extend(Ext.util.Observable, {
 
     ,bindEvents: function() {
 
-        Ext.get(document.body).on('mouseover', function(event, target) {
-
-            if(null === target.firstChild || this.form.contains(target)) {
-                return;
-            }
-
-            if(matches = this.matches(target)) {
-                this.select(target, matches);
-            }
-            else {
-                this.hide();
-            }
-        }, this, {
+        var self = this;
+        Ext.get(document.body).on('mouseover', this.handleEvent, this, {
             buffer: 1000
         });
+
+        Ext.get(document.body).on('dblclick', this.handleEvent, this);
 
         this.form.on('submit', function(event) {
 
@@ -104,7 +131,7 @@ Knp.Translator = Ext.extend(Ext.util.Observable, {
                 form: 'knplabs-translator-form'
                 ,method: 'POST'
                 ,success: function() {
-                    self.hide();
+                    //self.hide();
                 }
                 ,failure: function(xhr) {
                     json = Ext.util.JSON.decode(xhr.responseText);
@@ -117,21 +144,43 @@ Knp.Translator = Ext.extend(Ext.util.Observable, {
         }, this);
     }
 
+    ,handleEvent: function(event, target) {
+
+        if(this.form.contains(target)) {
+            return;
+        }
+
+        matches = this.matches(target);
+        if(matches.length) {
+            this.select(target, matches);
+        }
+        else {
+            this.hide();
+        }
+    }
+
     ,select: function(element, matches) {
+        var self = this;
         this.fireEvent('select', this, element, matches);
 
-        Ext.fly('knplabs-translator-id').dom.value = matches.id;
-        Ext.fly('knplabs-translator-domain').dom.value = matches.domain;
-        Ext.fly('knplabs-translator-locale').dom.value = matches.locale;
-        Ext.fly('knplabs-translator-value').dom.value = matches.value;
+        this.form.select('.form-input-container').remove();
 
-        var el = this.form.select('.error').hide(true);
+        Ext.each(matches, function(match, i) {
 
+            inputs = Ext.fly(self.appendSubForm(self.form.select('form').item(0), i));
+
+            inputs.select('.id').item(0).dom.value = match.id;
+            inputs.select('.domain').item(0).dom.value = match.domain;
+            inputs.select('.locale').item(0).dom.value = match.locale;
+            inputs.select('.value').item(0).dom.value = match.value;
+        });
+
+        self.appendSubmit(self.form.select('form').item(0));
+
+        var el = self.form.select('.error').hide(true);
+        this.form.setX(Ext.fly(element).getX());
         this.form.setY(Ext.fly(element).getY());
-        this.form.show(true);
-
-        Ext.fly('knplabs-translator-value').dom.focus();
-        Ext.fly('knplabs-translator-value').dom.select();
+        self.form.show(true);
     }
 
     ,createForm: function() {
@@ -142,18 +191,6 @@ Knp.Translator = Ext.extend(Ext.util.Observable, {
                 ,id:'knplabs-translator-form'
                 ,action: this.config.url
                 ,cls: 'translator-form'
-                ,children: [
-                     { tag: 'label', for: 'knplabs-translator-id', html: 'id' }
-                    ,{ tag: 'input', type: 'text', name: 'id',     cls: 'id', id: 'knplabs-translator-id' }
-                    ,{ tag: 'label', for: 'knplabs-translator-value', html: 'Value' }
-                    ,{ tag: 'input', type: 'text', name: 'value',  cls: 'value', id: 'knplabs-translator-value' }
-                    ,{ tag: 'label', for: 'knplabs-translator-domain', html: 'Domain' }
-                    ,{ tag: 'input', type: 'text', name: 'domain', cls: 'domain', id: 'knplabs-translator-domain' }
-                    ,{ tag: 'label', for: 'knplabs-translator-locale', html: 'Locale' }
-                    ,{ tag: 'input', type: 'text', name: 'locale', cls: 'locale', id: 'knplabs-translator-locale' }
-                    ,{ tag: 'input', type: 'submit', value: 'Submit' }
-                    ,{ tag: 'input', type: 'hidden', name: '_method', value: 'PUT' }
-                ]
             }
             ,{
                  tag: 'div'
@@ -163,5 +200,38 @@ Knp.Translator = Ext.extend(Ext.util.Observable, {
         });
 
         return form;
+    }
+
+    ,appendSubForm: function(form, i) {
+
+        var inputs = Ext.DomHelper.append(form.dom, {
+            id: 'form-input-container'
+            ,cls: 'form-input-container'
+            ,children: [
+                 { tag: 'label', for: 'knplabs-translator-id'+i, html: 'id' }
+                ,{ tag: 'input', type: 'text', name: 'trans['+i+'][id]',     cls: 'id', id: 'knplabs-translator-id'+i }
+                ,{ tag: 'label', for: 'knplabs-translator-value'+i, html: 'Value' }
+                ,{ tag: 'input', type: 'text', name: 'trans['+i+'][value]',  cls: 'value', id: 'knplabs-translator-value'+i }
+                ,{ tag: 'label', for: 'knplabs-translator-domain'+i, html: 'Domain' }
+                ,{ tag: 'input', type: 'text', name: 'trans['+i+'][domain]', cls: 'domain', id: 'knplabs-translator-domain'+i }
+                ,{ tag: 'label', for: 'knplabs-translator-locale'+i, html: 'Locale' }
+                ,{ tag: 'input', type: 'text', name: 'trans['+i+'][locale]', cls: 'locale', id: 'knplabs-translator-locale'+i }
+            ]
+        });
+
+        return inputs;
+    }
+
+    ,appendSubmit: function(form) {
+
+        var inputs = Ext.DomHelper.append(form.dom, {
+            cls: 'form-input-container'
+            ,children: [
+                 { tag: 'input', type: 'submit', value: 'Submit' }
+                ,{ tag: 'input', type: 'hidden', name: '_method', value: 'PUT' }
+            ]
+        });
+
+        return inputs;
     }
 });
