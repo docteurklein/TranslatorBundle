@@ -45,6 +45,7 @@
         <service id="twig.extension.trans" class="Knp\Bundle\TranslatorBundle\Templating\Twig\TranslationExtension" public="false">
             <tag name="twig.extension" />
             <argument type="service" id="templating.helper.translator.writer" />
+            <argument type="service" id="translator" />
         </service>
     </services>
 </container>
