@@ -13,6 +13,7 @@ Knp.Translator = Ext.extend(Ext.util.Observable, {
         Ext.apply(this.config, config, {
             url: ''
             ,expr: /\[T id="([^"]*)" domain="([^"]*)" locale="([^"]*)"\](.*?)\[\/T\]/
+            ,showUntranslated: true
         });
         this.form = Ext.get(this.createForm());
         this.hide();
@@ -87,6 +88,10 @@ Knp.Translator = Ext.extend(Ext.util.Observable, {
         }
 
         this.addMatch(node, matches);
+
+        if (this.config.showUntranslated && matches[1] === matches[4]) { // no change between key and value
+            Ext.fly(node).addClass('untranslated');
+        }
 
         return result;
     }
