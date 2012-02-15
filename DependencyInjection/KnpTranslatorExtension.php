@@ -16,6 +16,10 @@ class KnpTranslatorExtension extends Extension
         $configuration = new Configuration();
         $config = $processor->processConfiguration($configuration, $configs);
 
+        if (!$config['enabled']) {
+            return;
+        }
+
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
         foreach (array('translation', 'controller') as $basename) {
