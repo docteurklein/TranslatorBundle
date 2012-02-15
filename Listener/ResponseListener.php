@@ -55,6 +55,14 @@ class ResponseListener
 
         $this->injectScripts($response);
         $this->injectCss($response);
+        $this->addExternalPolicyHeaders($response);
+    }
+
+    private function addExternalPolicyHeaders(Response $response)
+    {
+        $response->headers->set('Access-Control-Allow-Origin', 'http://bincome.dev:8080');
+        //$response->headers->set('Access-Control-Allow-Methods', 'GET');
+        $response->headers->set('Access-Control-Allow-Headers', 'X-Requested-With');
     }
 
     /**
@@ -78,7 +86,7 @@ class ResponseListener
 
             $scripts = '';
             if(true === $this->includeVendorAssets) {
-                $url = $this->assetHelper->getUrl('bundles/knptranslator/js/ext-core.js');
+                $url = $this->assetHelper->getUrl('bundles/knptranslator/js/ext-core-debug.js');
                 $scripts = sprintf('<script type="text/javascript" src="%s"></script>', $url)."\n";
             }
 

@@ -129,7 +129,6 @@ Knp.Translator = Ext.extend(Ext.util.Observable, {
         Ext.get(document.body).on('dblclick', this.handleEvent, this);
 
         this.form.on('submit', function(event) {
-
             self = this;
             event.stopEvent();
             Ext.Ajax.request({
@@ -147,6 +146,36 @@ Knp.Translator = Ext.extend(Ext.util.Observable, {
                 }
             });
         }, this);
+
+        this.form.on('click', function(event) {
+            var link = Ext.fly(event.target);
+            if (link.hasClass('source-translate')) {
+                var id = link.up('.inputs-container').select('.id').item(0).dom.value;
+                var sourceLocale = link.up('.inputs-container').select('.source-locale').item(0).dom.value;
+                var locale = link.up('.inputs-container').select('.locale').item(0).dom.value;
+
+                var value = link.up('.inputs-container').select('.value');
+
+                self.search(id, sourceLocale, locale, function(response) {
+                    value.item(0).dom.value = response;
+                });
+            }
+        });
+    }
+
+    ,search: function(id, sourceLocale, locale, callback) {
+        var self = this;
+        sourceLocale = sourceLocale || 'en';
+        locale = locale.split('_')[0];
+        Ext.Ajax.request({
+            url: 'http://mymemory.translated.net/api/get?q='+ id +'&langpair='+ sourceLocale +'|'+ locale,
+            useDefaultXhrHeader: false, // shitty ext-core is shitty, this doesn't work
+            success: function(xhr) {
+                var json = Ext.util.JSON.decode(xhr.responseText);
+                var response = json.responseData.translatedText;
+                callback.apply(self, [response]);
+            },
+        });
     }
 
     ,handleEvent: function(event, target) {
@@ -212,16 +241,21 @@ Knp.Translator = Ext.extend(Ext.util.Observable, {
         var inputs = Ext.DomHelper.append(form.dom, {
             id: 'form-input-container'
             ,cls: 'form-input-container'
-            ,children: [
-                 { tag: 'label', for: 'knplabs-translator-id'+i, html: 'id' }
-                ,{ tag: 'input', type: 'text', name: 'trans['+i+'][id]',     cls: 'id', id: 'knplabs-translator-id'+i }
-                ,{ tag: 'label', for: 'knplabs-translator-value'+i, html: 'Value' }
-                ,{ tag: 'input', type: 'text', name: 'trans['+i+'][value]',  cls: 'value', id: 'knplabs-translator-value'+i }
-                ,{ tag: 'label', for: 'knplabs-translator-domain'+i, html: 'Domain' }
-                ,{ tag: 'input', type: 'text', name: 'trans['+i+'][domain]', cls: 'domain', id: 'knplabs-translator-domain'+i }
-                ,{ tag: 'label', for: 'knplabs-translator-locale'+i, html: 'Locale' }
-                ,{ tag: 'input', type: 'text', name: 'trans['+i+'][locale]', cls: 'locale', id: 'knplabs-translator-locale'+i }
-            ]
+            ,children: [{
+                cls: 'inputs-container'
+                ,children: [
+                     { tag: 'label' ,  for: 'knplabs-translator-id'+i     ,  html: 'id' }
+                    ,{ tag: 'input' ,  type: 'text'                       ,  name: 'trans['+i+'][id]'            ,  cls: 'id'            ,  id: 'knplabs-translator-id'+i }
+                    ,{ tag: 'input' ,  type: 'text'                       ,  name: 'trans['+i+'][source_locale]' ,  cls: 'source-locale' ,  id: 'knplabs-translator-source-locale'+i }
+                    ,{ tag: 'a'     ,  cls: 'source-translate'            ,  id: 'knplabs-translator-source-locale'+i, html: 'Find' }
+                    ,{ tag: 'label' ,  for: 'knplabs-translator-value'+i  ,  html: 'Value' }
+                    ,{ tag: 'input' ,  type: 'text'                       ,  name: 'trans['+i+'][value]'         ,  cls: 'value'         ,  id: 'knplabs-translator-value'+i }
+                    ,{ tag: 'label' ,  for: 'knplabs-translator-domain'+i ,  html: 'Domain' }
+                    ,{ tag: 'input' ,  type: 'text'                       ,  name: 'trans['+i+'][domain]'        ,  cls: 'domain'        ,  id: 'knplabs-translator-domain'+i }
+                    ,{ tag: 'label' ,  for: 'knplabs-translator-locale'+i ,  html: 'Locale' }
+                    ,{ tag: 'input' ,  type: 'text'                       ,  name: 'trans['+i+'][locale]'        ,  cls: 'locale'        ,  id: 'knplabs-translator-locale'+i }
+                ]
+            }]
         });
 
         return inputs;
