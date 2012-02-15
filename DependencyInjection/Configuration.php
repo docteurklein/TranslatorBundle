@@ -23,6 +23,7 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->booleanNode('include_vendor_assets')->defaultTrue()->end()
+                ->booleanNode('enabled')->defaultTrue()->end()
             ->end()
         ;
 
