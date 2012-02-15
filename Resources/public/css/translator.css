@@ -29,6 +29,9 @@
     margin-right: 20px;
 }
 
+#knplabs-translator-form input.source-locale {
+    width: 20px;
+}
 
 #knplabs-translator-container .error {
     color: #D8000C;
