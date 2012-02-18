@@ -33,6 +33,16 @@ Install & setup the bundle
     git clone git://github.com/docteurklein/TranslatoBundle.git
 
     ```
+    
+    By including into deps file:
+    
+    ``` ./deps-file 
+
+    [TranslatorBundle]
+		git=git://github.com/docteurklein/TranslatorBundle.git
+		target=/bundles/Knp/Bundle/TranslatorBundle
+
+    ```
 
 2.  Add the bundle to your `AppKernel` class
 
