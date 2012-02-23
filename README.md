@@ -126,8 +126,17 @@ You can decide wheter or not it will be included automatically.
 
     knplabs_translator:
         include_vendor_assets: false # defaults to true
+        enabled: false # defaults to true
+        roles: [ ROLE_TRANSLATE ] # roles that are needed to see translation form, defaults to null
 
     ```
+
+Role based conditions
+---------------------
+
+Additionaly to enabled/dsiabled, you can decide to display th etranslation forms per user roles.
+A user needs to be authenticated and needs all the roles you configured above to see the form.
+
 
 Services
 --------

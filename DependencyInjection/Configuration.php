@@ -24,7 +24,13 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->booleanNode('include_vendor_assets')->defaultTrue()->end()
                 ->booleanNode('enabled')->defaultTrue()->end()
-            ->end()
+                ->arrayNode('roles')
+                    ->defaultNull()
+                    ->beforeNormalization()->ifString()->then(function($v) {
+                        return preg_split('/\s*,\s*/', $v);
+                    })->end()
+                    ->prototype('scalar')->end()
+                ->end()
         ;
 
         return $treeBuilder;

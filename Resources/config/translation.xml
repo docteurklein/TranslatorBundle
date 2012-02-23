@@ -40,6 +40,9 @@
         <service id="templating.helper.translator.writer" class="Knp\Bundle\TranslatorBundle\Templating\Helper\TranslatorHelper">
             <tag name="templating.helper" alias="translator" />
             <argument type="service" id="translator.writer" />
+            <call method="setSecurityContext">
+                <argument type="service" id="security.context" />
+            </call>
         </service>
 
         <service id="twig.extension.trans" class="Knp\Bundle\TranslatorBundle\Templating\Twig\TranslationExtension" public="false">

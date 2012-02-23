@@ -26,11 +26,16 @@ class KnpTranslatorExtension extends Extension
             $loader->load(sprintf('%s.xml', $basename));
         }
 
-        foreach (array('include_vendor_assets') as $attribute) {
+        foreach (array('include_vendor_assets', 'roles') as $attribute) {
             if (isset($config[$attribute])) {
                 $container->setParameter('knplabs.translator.'.$attribute, $config[$attribute]);
             }
         }
+
+        $container
+            ->getDefinition('templating.helper.translator.writer')
+            ->addMethodCall('setRoles', array($container->getParameter('knplabs.translator.roles')))
+        ;
 
         // Use the "writer" translator instead of the default one
         $container->setAlias('translator', 'translator.writer');
