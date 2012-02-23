@@ -1,4 +1,3 @@
-
 ## TranslatorBundle
 
 This bundle's purpose is to provide an interface for edition, addition and deletion
@@ -134,8 +133,8 @@ You can decide wheter or not it will be included automatically.
 Role based conditions
 ---------------------
 
-Additionaly to enabled/dsiabled, you can decide to display th etranslation forms per user roles.
-A user needs to be authenticated and needs all the roles you configured above to see the form.
+Additionaly to `enabled` option, you can decide to display the translation form per user's roles.
+Users need to be authenticated and need all the roles you configured above to see the form.
 
 
 Services
