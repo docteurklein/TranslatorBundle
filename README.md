@@ -1,4 +1,3 @@
-
 ## TranslatorBundle
 
 This bundle's purpose is to provide an interface for edition, addition and deletion
@@ -30,7 +29,7 @@ Install & setup the bundle
 
     mkdir -p vendor/bundles/Knp/Bundle
     cd !$
-    git clone git://github.com/docteurklein/TranslatoBundle.git
+    git clone git://github.com/docteurklein/TranslatorBundle.git
 
     ```
     
