@@ -43,6 +43,17 @@ Install & setup the bundle
 
     ```
 
+    By composer:
+
+    ```
+
+    "require" :  {
+        // ...
+        "docteurklein/translator-bundle",
+    }
+
+    ```
+
 2.  Add the bundle to your `AppKernel` class
 
     ``` php
