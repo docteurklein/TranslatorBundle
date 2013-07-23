@@ -4,4 +4,8 @@ knplabs_translator_list:
         _controller: knplabs_translator.controller.edition:listAction
         _locale: ~
     requirements: { _method: GET }
-
+knplabs_translator_index:
+    pattern: /
+    defaults:
+        _controller: knplabs_translator.controller.edition:indexAction
+    requirements: { _method: GET|POST }

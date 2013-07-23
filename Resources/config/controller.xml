@@ -16,6 +16,7 @@
             <argument type="service" id="translator.writer" />
             <argument type="service" id="templating.helper.translator.writer" />
             <argument type="service" id="templating" />
+            <argument type="service" id="form.factory" />
         </service>
     </services>
 </container>
