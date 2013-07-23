@@ -1,0 +1,21 @@
+{
+    "name":         "docteurklein/translator-bundle",
+    "description":  "This bundle's purpose is to provide an interface for edition, addition and deletion of translations messages.",
+    "keywords":     ["translator"],
+    "type":         "symfony-bundle",
+    "license":      "MIT",
+    "authors":      [
+        {
+            "name":     "docteurklein",
+            "homepage": "https://github.com/docteurklein"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload":     {
+        "psr-0": { "Knp\\Bundle\\TranslatorBundle": "" }
+    },
+    "target-dir": "Knp/Bundle/TranslatorBundle",
+    "minimum-stability": "dev"
+}
