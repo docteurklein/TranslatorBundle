@@ -42,15 +42,36 @@ class TranslatorHelper extends BaseTranslatorHelper
     }
 
     /**
-     * Wraps a translated value with [T id="%s" domain="%s" locale="%s"]%s[/T]
+     * Wraps a translated value with
+     * <ins class="%s" data-id="%s" data-domain="%s" data-locale="%s" data-value="%s">%s</ins>
      * Used to detect in-line edition of translations
      *
+     * @param        $id
+     * @param        $trans
+     * @param string $domain
+     * @param null   $locale
+     *
      * @return string
-     */
-    public function wrap($id, $trans, $domain = 'messages', $locale = null)
+     */public function wrap($id, $trans, $domain = 'messages', $locale = null)
     {
-        $startTag = sprintf('[T id="%s" domain="%s" locale="%s"]', $id, $domain, $locale);
 
-        return sprintf('%s%s%s', $startTag, $trans, '[/T]');
+        $class = array('knp-translator');
+        if($id === $trans) {
+            $class[] = 'untranslated';
+        }
+
+        $startTag =  vsprintf(
+            '<ins class="%s" data-id="%s" data-domain="%s" data-locale="%s" data-value="%s">',
+            array(
+                implode(' ', $class),
+                $id,
+                $domain,
+                $locale,
+                $trans
+            )
+        );
+
+
+        return sprintf('%s%s%s', $startTag, $trans, '</ins>');
     }
 }
