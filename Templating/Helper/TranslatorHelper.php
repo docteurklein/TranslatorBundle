@@ -50,9 +50,15 @@ class TranslatorHelper extends BaseTranslatorHelper
     public function wrap($id, $trans, $domain = 'messages', $locale = null)
     {
 
+        $class = array('knp-translator', 'translatable');
+        if($id === $trans) {
+            $class[] = 'untranslated';
+        }
+
         $startTag =  vsprintf(
-            '<ins class="knp-translator" data-id="%s" data-domain="%s" data-locale="%s" data-value="%s">',
+            '<ins class="%s" data-id="%s" data-domain="%s" data-locale="%s" data-value="%s">',
             array(
+                implode(' ', $class),
                 $id,
                 $domain,
                 $locale,

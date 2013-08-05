@@ -88,6 +88,7 @@ class ResponseListener
 
             $script= <<<HTML
 <script type="text/javascript">
+    $.noConflict();
     var knpTranslator;
     $(function() {
         knpTranslator = new Knp.Translator({

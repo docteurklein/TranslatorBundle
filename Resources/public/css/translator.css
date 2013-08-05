@@ -1,12 +1,13 @@
 #knplabs-translator-container{
   position: absolute;
+  width:350px;
   display: none;
   margin: 0;
   padding: 1px 0px;
   right: 0px;
 
-  opacity: 0.80;
-  filter: alpha(opacity : 80);
+  opacity: 0.95;
+  filter: alpha(opacity : 95);
 
   z-index: 10000;
   white-space: nowrap;
@@ -43,7 +44,12 @@
     padding:15px 10px 15px 50px;
 }
 
-.untranslated {
+.knp-translator.untranslated {
     color: red;
     border: 1px solid red;
+}
+
+.knp-translator {
+    color: #228B22;
+    border: 1px solid #228B22;
 }
