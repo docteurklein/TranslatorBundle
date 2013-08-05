@@ -61,7 +61,7 @@ class TranslatorHelper extends BaseTranslatorHelper
         }
 
         $startTag =  vsprintf(
-            '<ins class="%s" data-id="%s" data-domain="%s" data-locale="%s" data-value="%s">',
+            "<ins class='%s' data-id='%s' data-domain='%s' data-locale='%s' data-value='%s'>",
             array(
                 implode(' ', $class),
                 $id,
