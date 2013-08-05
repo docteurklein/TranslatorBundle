@@ -88,13 +88,16 @@ class ResponseListener
 
             $script= <<<HTML
 <script type="text/javascript">
-    $.noConflict();
-    var knpTranslator;
-    $(function() {
-        knpTranslator = new Knp.Translator({
-            url: '%s'
+    jQuery.noConflict();
+    (function($) {
+        var knpTranslator;
+        $(function() {
+            knpTranslator = new Knp.Translator({
+                url: '%s'
+            });
         });
-    });
+    })(jQuery);
+
 </script>
 HTML;
             $scripts .= sprintf($script, $this->router->generate('knplabs_translator_put'))."\n";
