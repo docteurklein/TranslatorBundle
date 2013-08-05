@@ -1,5 +1,6 @@
-#knplabs-translator-container {
+#knplabs-translator-container{
   position: absolute;
+  display: none;
   margin: 0;
   padding: 1px 0px;
   right: 0px;
@@ -9,6 +10,10 @@
 
   z-index: 10000;
   white-space: nowrap;
+}
+
+#knplabs-translator-container.open{
+    display: block !important;
 }
 
 #knplabs-translator-container[id] {

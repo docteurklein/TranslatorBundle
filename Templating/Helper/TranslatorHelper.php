@@ -49,8 +49,18 @@ class TranslatorHelper extends BaseTranslatorHelper
      */
     public function wrap($id, $trans, $domain = 'messages', $locale = null)
     {
-        $startTag = sprintf('[T id="%s" domain="%s" locale="%s"]', $id, $domain, $locale);
 
-        return sprintf('%s%s%s', $startTag, $trans, '[/T]');
+        $startTag =  vsprintf(
+            '<ins class="knp-translator" data-id="%s" data-domain="%s" data-locale="%s" data-value="%s">',
+            array(
+                $id,
+                $domain,
+                $locale,
+                $trans
+            )
+        );
+
+
+        return sprintf('%s%s%s', $startTag, $trans, '</ins>');
     }
 }

@@ -15,6 +15,17 @@ class TranslationExtension extends BaseTranslationExtension
 {
     private $translatorHelper;
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getFilters()
+    {
+        return array(
+            'trans' => new \Twig_Filter_Method($this, 'trans', array('is_safe' => array('html'))),
+            'transchoice' => new \Twig_Filter_Method($this, 'transchoice', array('is_safe' => array('html'))),
+        );
+    }
+
     public function __construct(TranslatorHelper $translatorHelper, TranslatorInterface $translator)
     {
         parent::__construct($translator);

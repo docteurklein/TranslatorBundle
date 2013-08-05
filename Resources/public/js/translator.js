@@ -1,4 +1,159 @@
-Ext.namespace('Knp');
+var Knp = {
+    Translator: function(options) {
+        this.options = $.extend({}, this.defaults, options);
+        this.init();
+    }
+};
+
+Knp.Translator.prototype = {
+    constructor: Knp.Translator,
+
+    defaults: {
+        config: {},
+        form: null,
+        timer: null
+    },
+    options: {},
+
+    /**
+     * Initialization
+     */
+    init: function() {
+        this.createForm();
+        this.bindEvents();
+    },
+    createForm: function() {
+        this.form = $('<div/>',{
+                'id': 'knplabs-translator-container'
+            }).append(
+                $('<form/>', {
+                    'id': 'knplabs-translator-form',
+                    'action': this.options.url,
+                    'method': 'POST',
+                    'class': 'translator-form'
+                }),
+                $('<div/>', {
+                    'class': 'error',
+                    'html' : ''
+                })
+            );
+
+        $('body').append(this.form);
+    },
+    appendSubForm: function(element) {
+
+        var id = element.attr("data-id");
+
+        this.form.find('form').append(
+            $('<div/>', { 'id': 'form-input-container', 'class': 'form-input-container'})
+            .append(
+                $('<label/>', { 'for': 'knplabs-translator-id'+id, 'html': 'id'  }),
+                $('<input/>',{
+                    'type': 'text',
+                    'name': 'trans['+id+'][id]',
+                    'class': 'id', 'id':
+                    'knplabs-translator-id'+id,
+                    'value': element.attr('data-id')
+                }),
+                $('<label/>', { 'for': 'knplabs-translator-value'+id, 'html': 'Value'  }),
+                $('<input/>', {
+                    'type': 'text',
+                    'name': 'trans['+id+'][value]',
+                    'class': 'value',
+                    'id': 'knplabs-translator-value'+id,
+                    'value': element.attr('data-value')
+                }),
+                $('<label/>', { 'for': 'knplabs-translator-domain'+id, 'html': 'Domain'  }),
+                $('<input/>', {
+                    'type': 'text',
+                    'name': 'trans['+id+'][domain]',
+                    'class': 'domain',
+                    'id': 'knplabs-translator-domain'+id,
+                    'value': element.attr('data-domain')
+                }),
+                $('<label/>', { 'for': 'knplabs-translator-locale'+id, 'html': 'Locale'  }),
+                $('<input/>', {
+                    'type': 'text',
+                    'name': 'trans['+id+'][locale]',
+                    'class': 'locale',
+                    'id': 'knplabs-translator-locale'+id,
+                    'value': element.attr('data-locale')
+                }),
+                $('<button/>', {
+                    'type': 'submit',
+                    'text': 'Submit'
+                })
+            )
+        );
+
+        this.form.css({
+            left: element.offset().left,
+            top:element.offset().top
+        });
+    },
+    bindEvents: function() {
+        var self = this;
+        $('ins.knp-translator').bind('mouseover dblclick', function(e){
+            self.timer = setTimeout(function() {
+                self.handleEvent(e)
+            }, 800)
+        });
+        $('ins.knp-translator').bind('mouseleave', function(){
+            clearTimeout(self.timer);
+        });
+        $('ins.knp-translator').bind('dblclick', function(e){self.handleEvent(e)});
+        $('#knplabs-translator-container').bind('mouseleave', function(e){
+            $(this).removeClass('open');
+        });
+
+        this.form.find('form').submit(function(e){
+            e.preventDefault();
+            console.log($(this).serialize());
+            $.ajax({
+                type: "PUT",
+                url: $(this).attr('action'),
+                data: $(this).serialize(),
+                success: function(data) {
+
+
+                },
+                error:function (xhr){
+                    json =jQuery.parseJSON(xhr.responseText);
+                }
+            });
+        });
+
+        /*this.form.on('submit', function(event) {
+
+            self = this;
+            event.stopEvent();
+            Ext.Ajax.request({
+                form: 'knplabs-translator-form'
+                ,method: 'POST'
+                ,success: function() {
+                    //self.hide();
+                }
+                ,failure: function(xhr) {
+                    json = Ext.util.JSON.decode(xhr.responseText);
+
+                    var el = self.form.select('.error').item(0);
+                    el.dom.firstChild.nodeValue = json.error;
+                    el.show(true);
+                }
+            });
+        }, this); */
+
+    },
+    handleEvent: function(event) {
+        event.preventDefault();
+        this.form.find('#form-input-container').remove();
+        this.appendSubForm($(event.currentTarget));
+        this.form.addClass('open');
+        this.form.focus();
+    }
+}
+
+/*Ext.namespace('Knp');
 
 Knp.Translator = Ext.extend(Ext.util.Observable, {
 
@@ -99,7 +254,7 @@ Knp.Translator = Ext.extend(Ext.util.Observable, {
     ,addMatch: function(node, matches)
     {
         this.matchedNodes.push({
-             node:   node
+            node:   node
             ,id:     matches[1]
             ,domain: matches[2]
             ,locale: matches[3]
@@ -197,11 +352,11 @@ Knp.Translator = Ext.extend(Ext.util.Observable, {
                 ,action: this.config.url
                 ,cls: 'translator-form'
             }
-            ,{
-                 tag: 'div'
-                ,cls: 'error'
-                ,html: ' '
-            }]
+                ,{
+                    tag: 'div'
+                    ,cls: 'error'
+                    ,html: ' '
+                }]
         });
 
         return form;
@@ -213,7 +368,7 @@ Knp.Translator = Ext.extend(Ext.util.Observable, {
             id: 'form-input-container'
             ,cls: 'form-input-container'
             ,children: [
-                 { tag: 'label', for: 'knplabs-translator-id'+i, html: 'id' }
+                { tag: 'label', for: 'knplabs-translator-id'+i, html: 'id' }
                 ,{ tag: 'input', type: 'text', name: 'trans['+i+'][id]',     cls: 'id', id: 'knplabs-translator-id'+i }
                 ,{ tag: 'label', for: 'knplabs-translator-value'+i, html: 'Value' }
                 ,{ tag: 'input', type: 'text', name: 'trans['+i+'][value]',  cls: 'value', id: 'knplabs-translator-value'+i }
@@ -232,11 +387,11 @@ Knp.Translator = Ext.extend(Ext.util.Observable, {
         var inputs = Ext.DomHelper.append(form.dom, {
             cls: 'form-input-container'
             ,children: [
-                 { tag: 'input', type: 'submit', value: 'Submit' }
+                { tag: 'input', type: 'submit', value: 'Submit' }
                 ,{ tag: 'input', type: 'hidden', name: '_method', value: 'PUT' }
             ]
         });
 
         return inputs;
     }
-});
+});*/
