@@ -42,15 +42,20 @@ class TranslatorHelper extends BaseTranslatorHelper
     }
 
     /**
-     * Wraps a translated value with [T id="%s" domain="%s" locale="%s"]%s[/T]
+     * Wraps a translated value with
+     * <ins class="%s" data-id="%s" data-domain="%s" data-locale="%s" data-value="%s">%s</ins>
      * Used to detect in-line edition of translations
      *
+     * @param        $id
+     * @param        $trans
+     * @param string $domain
+     * @param null   $locale
+     *
      * @return string
-     */
-    public function wrap($id, $trans, $domain = 'messages', $locale = null)
+     */public function wrap($id, $trans, $domain = 'messages', $locale = null)
     {
 
-        $class = array('knp-translator', 'translatable');
+        $class = array('knp-translator');
         if($id === $trans) {
             $class[] = 'untranslated';
         }
