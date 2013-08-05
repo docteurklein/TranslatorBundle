@@ -54,7 +54,6 @@ class TranslatorHelper extends BaseTranslatorHelper
      * @return string
      */public function wrap($id, $trans, $domain = 'messages', $locale = null)
     {
-
         $class = array('knp-translator');
         if($id === $trans) {
             $class[] = 'untranslated';
@@ -67,7 +66,7 @@ class TranslatorHelper extends BaseTranslatorHelper
                 $id,
                 $domain,
                 $locale,
-                $trans
+                htmlspecialchars($trans, ENT_QUOTES)
             )
         );
 

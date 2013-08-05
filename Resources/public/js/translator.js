@@ -61,7 +61,7 @@ Knp.Translator.prototype = {
                     'type': 'text',
                     'name': 'trans['+id+'][value]',
                     'class': 'value',
-                    'id': 'knplabs-translator-value'+id,
+                    'id': 'knplabs-translator-value-'+id,
                     'value': element.attr('data-value')
                 }),
                 jQuery('<label/>', { 'for': 'knplabs-translator-domain-'+id, 'html': 'Domain'  }),
@@ -69,7 +69,7 @@ Knp.Translator.prototype = {
                     'type': 'text',
                     'name': 'trans['+id+'][domain]',
                     'class': 'domain',
-                    'id': 'knplabs-translator-domain'+id,
+                    'id': 'knplabs-translator-domain-'+id,
                     'value': element.attr('data-domain')
                 }),
                 jQuery('<label/>', { 'for': 'knplabs-translator-locale-'+id, 'html': 'Locale'  }),
@@ -77,7 +77,7 @@ Knp.Translator.prototype = {
                     'type': 'text',
                     'name': 'trans['+id+'][locale]',
                     'class': 'locale',
-                    'id': 'knplabs-translator-locale'+id,
+                    'id': 'knplabs-translator-locale-'+id,
                     'value': element.attr('data-locale')
                 }),
                 jQuery('<button/>', {
