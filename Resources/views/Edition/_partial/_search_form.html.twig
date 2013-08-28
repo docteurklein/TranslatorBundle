@@ -1,0 +1,8 @@
+<h3>{{ 'knplabs_translator.search.title'|trans({}, 'KnpTranslatorBundle') }}</h3>
+<hr/>
+<form action="{{ path('knplabs_translator_index') }}" {{ form_enctype(form) }} method="POST">
+    {{ form_widget(form) }}
+    <div>
+        <button type="submit"></i><span>Search</span></button>
+    </div>
+</form>

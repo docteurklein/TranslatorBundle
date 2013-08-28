@@ -33,7 +33,7 @@ class TranslatorTest extends DumperTest
 
         $translator = new Translator($containerMock, new MessageSelector());
         $translator->setLocale('en');
-        $translator->setFallbackLocale('en');
+        $translator->setFallbackLocales(array('en'));
 
         $translator->addLoader('yaml', new YamlFileLoader());
         $translator->addResource('yaml', __DIR__.'/../Fixtures/tests.en.yml', 'en', 'tests');
@@ -59,7 +59,7 @@ YAML;
 
         $translator = new Translator($containerMock, new MessageSelector());
         $translator->setLocale('en');
-        $translator->setFallbackLocale('en');
+        $translator->setFallbackLocales(array('en'));
 
         $translator->addLoader('yaml', new YamlFileLoader());
         $translator->addLoader('xliff', new XliffFileLoader());

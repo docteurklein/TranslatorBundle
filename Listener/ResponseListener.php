@@ -78,7 +78,7 @@ class ResponseListener
 
             $scripts = '';
             if(true === $this->includeVendorAssets) {
-                $url = $this->assetHelper->getUrl('bundles/knptranslator/js/ext-core.js');
+                $url = $this->assetHelper->getUrl('bundles/knptranslator/js/jquery-1.10.1.min.js');
                 $scripts = sprintf('<script type="text/javascript" src="%s"></script>', $url)."\n";
             }
 
@@ -88,12 +88,16 @@ class ResponseListener
 
             $script= <<<HTML
 <script type="text/javascript">
-    var knpTranslator;
-    Ext.onReady(function() {
-        knpTranslator = new Knp.Translator({
-            url: '%s'
+    jQuery.noConflict();
+    (function($) {
+        var knpTranslator;
+        $(function() {
+            knpTranslator = new Knp.Translator({
+                url: '%s'
+            });
         });
-    });
+    })(jQuery);
+
 </script>
 HTML;
             $scripts .= sprintf($script, $this->router->generate('knplabs_translator_put'))."\n";

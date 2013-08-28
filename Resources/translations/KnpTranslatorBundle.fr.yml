@@ -2,4 +2,6 @@ knplabs_translator:
   title: Traducteur
   list: Liste des traductions
   edit: Editer une traduction
-
+  index: Rechercher une traduction
+  search:
+    title: Ici vous pouvez rechercher une traduction par clé/domaine/locale

@@ -1,0 +1,30 @@
+{% extends 'KnpTranslatorBundle::layout.html.twig' %}
+
+{% block content %}
+
+    <h1>{{ 'knplabs_translator.index'|trans({}, 'KnpTranslatorBundle') }}</h1>
+
+    {% include 'KnpTranslatorBundle:Edition:_partial/_search_form.html.twig' %}
+
+    {% for domain, list in translations %}
+        <h3>{{ domain }}</h3>
+        <ul>
+            {% for resource in translator.getResources(locale, domain) %}
+                <li>{{ resource.getResource() }}</li>
+            {% endfor %}
+        </ul>
+        <table>
+            {% for source,target in list %}
+                <tr>
+                    <td class="trans-source">{{ source }}</td>
+                    {% set trans = translator.trans(source, {}, domain, locale) %}
+                    <td class="trans-target">{{ translatorHelper.wrap(source, trans, domain, locale)|raw }}</td>
+                </tr>
+
+            {% endfor %}
+        </table>
+    {% endfor %}
+
+{% endblock content %}
+
+

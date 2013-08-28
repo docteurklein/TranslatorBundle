@@ -1,0 +1,53 @@
+parameters:
+  knplabs.translator.include_vendor_assets: ~
+
+services:
+  translator.writer:
+    class: Knp\Bundle\TranslatorBundle\Translation\Translator
+    arguments:
+      - @service_container
+      - @translator.selector
+      - {}
+      - { cache_dir: ~, debug: %kernel.debug% }
+      - @?session
+
+  translator.dumper.yaml:
+    class: Knp\Bundle\TranslatorBundle\Dumper\YamlDumper
+    tags:
+      - { name: knplabs_translator.dumper }
+
+  translator.dumper.xliff:
+    class: Knp\Bundle\TranslatorBundle\Dumper\XliffDumper
+    tags:
+      - { name: knplabs_translator.dumper }
+
+  translator.dumper.csv:
+    class: Knp\Bundle\TranslatorBundle\Dumper\CsvDumper
+    tags:
+      - { name: knplabs_translator.dumper }
+
+  translator.response.listener.assets_injecter:
+    class: Knp\Bundle\TranslatorBundle\Listener\ResponseListener
+    scope: request
+    arguments:
+      - @templating.helper.assets
+      - @router
+      - %knplabs.translator.include_vendor_assets%
+    tags:
+      - { name: kernel.event_listener, event: kernel.response }
+
+  templating.helper.translator.writer:
+    class: Knp\Bundle\TranslatorBundle\Templating\Helper\TranslatorHelper
+    arguments:
+      - @translator.writer
+    tags:
+      - { name: templating.helper, alias: translator }
+
+  twig.extension.trans:
+    class: Knp\Bundle\TranslatorBundle\Templating\Twig\TranslationExtension
+    public: false
+    arguments:
+      - @templating.helper.translator.writer
+      - @translator
+    tags:
+      - { name: twig.extension }

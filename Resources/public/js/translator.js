@@ -1,242 +1,155 @@
-Ext.namespace('Knp');
+var Knp = {
+    Translator: function(options) {
+        this.options = jQuery.extend({}, this.defaults, options);
+        this.init();
+    }
+};
 
-Knp.Translator = Ext.extend(Ext.util.Observable, {
+Knp.Translator.prototype = {
+    constructor: Knp.Translator,
 
-    config: {}
-    ,form: null
-    ,matchedNodes: []
+    defaults: {
+        config: {},
+        form: null,
+        timerIn: null
+    },
+    options: {},
 
-    ,constructor: function(config) {
-        this.addEvents('select');
-        this.addEvents('translate');
-
-        Ext.apply(this.config, config, {
-            url: ''
-            ,expr: /\[T id="([^"]*)" domain="([^"]*)" locale="([^"]*)"\](.*?)\[\/T\]/
-            ,showUntranslated: true
-        });
-        this.form = Ext.get(this.createForm());
-        this.hide();
-
+    /**
+     * Initialization
+     */
+    init: function() {
+        this.createForm();
         this.bindEvents();
+    },
+    createForm: function() {
+        this.form = jQuery('<div/>',{
+                'id': 'knplabs-translator-container'
+            }).append(
+                jQuery('<form/>', {
+                    'id': 'knplabs-translator-form',
+                    'action': this.options.url,
+                    'method': 'POST',
+                    'class': 'translator-form'
+                }),
+                jQuery('<div/>', {
+                    'class': 'error',
+                    'html' : '',
+                    'style': 'display:none'
+                })
+            );
 
-        this.initTranslatableNodeList();
-    }
+        jQuery('body').append(this.form);
+    },
+    appendSubForm: function(element) {
 
-    ,reinitialize: function() {
-        this.initTranslatableNodeList();
-    }
+        var id = element.attr("data-id");
 
-    ,hide: function() {
-        this.form.hide(true);
+        this.form.find('form').append(
+            jQuery('<div/>', {'class': 'form-input-container', 'data-id': id})
+            .append(
+                jQuery('<label/>', { 'for': 'knplabs-translator-id-'+id, 'html': 'id'  }),
+                jQuery('<input/>',{
+                    'type': 'text',
+                    'name': 'trans['+id+'][id]',
+                    'class': 'id',
+                    'id': 'knplabs-translator-id-'+id,
+                    'value': element.attr('data-id')
+                }),
+                jQuery('<label/>', { 'for': 'knplabs-translator-value-'+id, 'html': 'Value'  }),
+                jQuery('<input/>', {
+                    'type': 'text',
+                    'name': 'trans['+id+'][value]',
+                    'class': 'value',
+                    'id': 'knplabs-translator-value-'+id,
+                    'value': element.attr('data-value')
+                }),
+                jQuery('<label/>', { 'for': 'knplabs-translator-domain-'+id, 'html': 'Domain'  }),
+                jQuery('<input/>', {
+                    'type': 'text',
+                    'name': 'trans['+id+'][domain]',
+                    'class': 'domain',
+                    'id': 'knplabs-translator-domain-'+id,
+                    'value': element.attr('data-domain')
+                }),
+                jQuery('<label/>', { 'for': 'knplabs-translator-locale-'+id, 'html': 'Locale'  }),
+                jQuery('<input/>', {
+                    'type': 'text',
+                    'name': 'trans['+id+'][locale]',
+                    'class': 'locale',
+                    'id': 'knplabs-translator-locale-'+id,
+                    'value': element.attr('data-locale')
+                }),
+                jQuery('<button/>', {
+                    'type': 'submit',
+                    'text': 'Submit'
+                })
+            )
+        );
 
-        var el = this.form.select('.error').hide(true);
-    }
-
-    ,initTranslatableNodeList: function() {
-
-        var self = this;
-
-        var list = Ext.fly(document.body).select('*'); // ouch
-        list.each(function(node) {
-
-            self.handleNode(node.dom);
-        });
-    }
-
-    ,handleNode: function(node) {
-
-        var self = this;
-
-        // node content
-        if(node.firstChild !== null && node.firstChild.nodeType === 3) { // Node.TEXT_NODE === 3
-            var content = node.firstChild.nodeValue;
-            var result = this.checkTranslatableText(content, node);
-            if(false !== result) {
-                node.firstChild.nodeValue = result;
-            }
+        var x = element.offset().left;
+        if (element.offset().left + this.form.width() > jQuery('body').width()) {
+            x = jQuery('body').width() - this.form.width();
         }
 
-        // node attributes
-        var matched = false;
-        Ext.each(node.attributes, function(attribute) {
-            var result = self.checkTranslatableText(attribute.value, node);
-            if(false !== result) {
-                attribute.value = result;
-            }
+        var y = element.offset().top;
+        if (element.offset().top + this.form.height() > jQuery('body').height()) {
+            y = jQuery('body').height() - this.form.height();
+        }
+
+        this.form.css({
+            left: x,
+            top: y
         });
-    }
-
-    ,checkTranslatableText: function(text, node) {
-
+    },
+    bindEvents: function() {
         var self = this;
-        var matches = this.config.expr.exec(text);
-        if(matches === null) {
-            return false;
-        }
-        result = matches[4];
+        jQuery('ins.knp-translator').bind('mouseover dblclick', function(e){
+            self.timerIn = setTimeout(function() {
+                self.handleEvent(e)
+            }, 800)
+        });
+        jQuery('ins.knp-translator').bind('mouseleave', function(){
+            clearTimeout(self.timerIn);
 
-        var newText = matches.input.replace(matches[0], '');
-        while (newText.trim()) { // multiple trans tags in same string
-            newMatches = this.config.expr.exec(newText);
-            newText = '';
-            if(newMatches !== null) {
-                this.addMatch(node, newMatches);
-                newText = newMatches.input.replace(newMatches[0], '');
-                result += newMatches[4];
-            }
-        }
-
-        this.addMatch(node, matches);
-
-        if (this.config.showUntranslated && matches[1] === matches[4]) { // no change between key and value
-            Ext.fly(node).addClass('untranslated');
-        }
-
-        return result;
-    }
-
-    ,addMatch: function(node, matches)
-    {
-        this.matchedNodes.push({
-             node:   node
-            ,id:     matches[1]
-            ,domain: matches[2]
-            ,locale: matches[3]
-            ,value:  matches[4]
+        });
+        jQuery('ins.knp-translator').bind('dblclick', function(e){self.handleEvent(e)});
+        jQuery('#knplabs-translator-container').bind('mouseleave', function(e){
+            jQuery(this).removeClass('open');
         });
 
-    }
+        this.form.find('form').submit(function(e){
+            e.preventDefault();
+            var form = jQuery(this);
+            jQuery.ajax({
+                type: "PUT",
+                url: form.attr('action'),
+                data: form.serialize(),
+                success: function(data) {
+                    var trans = jQuery('.knp-translator[data-id="'+
+                        jQuery(form
+                            .find('.form-input-container'))
+                            .attr('data-id')
+                        +'"]');
 
-    ,matches: function(target) {
-        var matches = [];
-        Ext.each(this.matchedNodes, function(match) {
-            if(match.node === target) {
-                matches.push(match);
-            }
-        });
-
-        return matches;
-    }
-
-    ,bindEvents: function() {
-
-        var self = this;
-        Ext.get(document.body).on('mouseover', this.handleEvent, this, {
-            buffer: 1000
-        });
-
-        Ext.get(document.body).on('dblclick', this.handleEvent, this);
-
-        this.form.on('submit', function(event) {
-
-            self = this;
-            event.stopEvent();
-            Ext.Ajax.request({
-                form: 'knplabs-translator-form'
-                ,method: 'POST'
-                ,success: function() {
-                    //self.hide();
-                }
-                ,failure: function(xhr) {
-                    json = Ext.util.JSON.decode(xhr.responseText);
-
-                    var el = self.form.select('.error').item(0);
-                    el.dom.firstChild.nodeValue = json.error;
-                    el.show(true);
+                    trans.data('value', data.trans);
+                    trans.text(data.trans);
+                },
+                error:function (xhr){
+                    var response = jQuery.parseJSON(xhr.responseText);
+                    var error = self.form.find('.error');
+                    error.text(response.error)
+                    error.show();
                 }
             });
-        }, this);
-    }
-
-    ,handleEvent: function(event, target) {
-
-        if(this.form.contains(target)) {
-            return;
-        }
-
-        matches = this.matches(target);
-        if(matches.length) {
-            this.select(target, matches);
-        }
-        else {
-            this.hide();
-        }
-    }
-
-    ,select: function(element, matches) {
-        var self = this;
-        this.fireEvent('select', this, element, matches);
-
-        this.form.select('.form-input-container').remove();
-
-        Ext.each(matches, function(match, i) {
-
-            inputs = Ext.fly(self.appendSubForm(self.form.select('form').item(0), i));
-
-            inputs.select('.id').item(0).dom.value = match.id;
-            inputs.select('.domain').item(0).dom.value = match.domain;
-            inputs.select('.locale').item(0).dom.value = match.locale;
-            inputs.select('.value').item(0).dom.value = match.value;
         });
-
-        self.appendSubmit(self.form.select('form').item(0));
-
-        var el = self.form.select('.error').hide(true);
-        this.form.setX(Ext.fly(element).getX());
-        this.form.setY(Ext.fly(element).getY());
-        self.form.show(true);
+    },
+    handleEvent: function(event) {
+        event.preventDefault();
+        this.form.find('.form-input-container').remove();
+        this.form.find('.error').hide();
+        this.appendSubForm(jQuery(event.currentTarget));
+        this.form.addClass('open');
+        this.form.focus();
     }
-
-    ,createForm: function() {
-        var form = Ext.DomHelper.append(document.body, {
-            id:'knplabs-translator-container'
-            ,children: [{
-                tag: 'form'
-                ,id:'knplabs-translator-form'
-                ,action: this.config.url
-                ,cls: 'translator-form'
-            }
-            ,{
-                 tag: 'div'
-                ,cls: 'error'
-                ,html: ' '
-            }]
-        });
-
-        return form;
-    }
-
-    ,appendSubForm: function(form, i) {
-
-        var inputs = Ext.DomHelper.append(form.dom, {
-            id: 'form-input-container'
-            ,cls: 'form-input-container'
-            ,children: [
-                 { tag: 'label', for: 'knplabs-translator-id'+i, html: 'id' }
-                ,{ tag: 'input', type: 'text', name: 'trans['+i+'][id]',     cls: 'id', id: 'knplabs-translator-id'+i }
-                ,{ tag: 'label', for: 'knplabs-translator-value'+i, html: 'Value' }
-                ,{ tag: 'input', type: 'text', name: 'trans['+i+'][value]',  cls: 'value', id: 'knplabs-translator-value'+i }
-                ,{ tag: 'label', for: 'knplabs-translator-domain'+i, html: 'Domain' }
-                ,{ tag: 'input', type: 'text', name: 'trans['+i+'][domain]', cls: 'domain', id: 'knplabs-translator-domain'+i }
-                ,{ tag: 'label', for: 'knplabs-translator-locale'+i, html: 'Locale' }
-                ,{ tag: 'input', type: 'text', name: 'trans['+i+'][locale]', cls: 'locale', id: 'knplabs-translator-locale'+i }
-            ]
-        });
-
-        return inputs;
-    }
-
-    ,appendSubmit: function(form) {
-
-        var inputs = Ext.DomHelper.append(form.dom, {
-            cls: 'form-input-container'
-            ,children: [
-                 { tag: 'input', type: 'submit', value: 'Submit' }
-                ,{ tag: 'input', type: 'hidden', name: '_method', value: 'PUT' }
-            ]
-        });
-
-        return inputs;
-    }
-});
+}
