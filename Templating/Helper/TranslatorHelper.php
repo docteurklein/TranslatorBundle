@@ -66,10 +66,9 @@ class TranslatorHelper extends BaseTranslatorHelper
                 $id,
                 $domain,
                 $locale,
-                htmlspecialchars($trans, ENT_QUOTES)
+                $trans
             )
         );
-
 
         return sprintf('%s%s%s', $startTag, $trans, '</ins>');
     }
