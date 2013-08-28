@@ -132,7 +132,7 @@ Knp.Translator.prototype = {
                             .attr('data-id')
                         +'"]');
 
-                    trans.attr('data-value', data.trans);
+                    trans.data('value', data.trans);
                     trans.text(data.trans);
                 },
                 error:function (xhr){

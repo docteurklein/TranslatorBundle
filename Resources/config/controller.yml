@@ -1,0 +1,17 @@
+services:
+  knplabs_translator.controller.translator:
+    class: Knp\Bundle\TranslatorBundle\Controller\TranslatorController
+    scope: request
+    arguments:
+        - @request
+        - @translator.writer
+        - @logger
+  knplabs_translator.controller.edition:
+    class: Knp\Bundle\TranslatorBundle\Controller\EditionController
+    scope: request
+    arguments:
+      - @request
+      - @translator.writer
+      - @templating.helper.translator.writer
+      - @templating
+      - @form.factory

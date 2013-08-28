@@ -3,7 +3,7 @@
 namespace Knp\Bundle\TranslatorBundle\DependencyInjection;
 
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 
@@ -18,10 +18,10 @@ class KnpTranslatorExtension extends Extension
             return;
         }
 
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
         foreach (array('translation', 'controller') as $basename) {
-            $loader->load(sprintf('%s.xml', $basename));
+            $loader->load(sprintf('%s.yml', $basename));
         }
 
         foreach (array('include_vendor_assets') as $attribute) {
