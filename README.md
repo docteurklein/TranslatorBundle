@@ -15,7 +15,7 @@ Install & setup the bundle
 
 1.  Install via composer
 
-    composer require docteurklein/translator-bundle=~2.0
+    composer require docteurklein/translator-bundle=~3.0
 
 
 2.  Add the bundle to your `AppKernel` class
