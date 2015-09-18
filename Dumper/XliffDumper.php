@@ -2,21 +2,19 @@
 
 namespace Knp\Bundle\TranslatorBundle\Dumper;
 
-use Knp\Bundle\TranslatorBundle\Dumper\DumperInterface;
+use Knp\Bundle\TranslatorBundle\Dumper\Dumper;
 use Knp\Bundle\TranslatorBundle\Exception\InvalidTranslationKeyException;
-use Symfony\Component\Config\Resource\FileResource;
-use Symfony\Component\CssSelector\XPathExpr;
 use \DOMDocument;
 use \DOMNode;
 use \DOMXPath;
 
-class XliffDumper implements DumperInterface
+class XliffDumper implements Dumper
 {
     private $currentLibXmlErrorHandler;
 
-    public function supports(FileResource $resource)
+    public function supports($resource)
     {
-        return 'xliff' === pathinfo($resource->getResource(), PATHINFO_EXTENSION);
+        return in_array(pathinfo($resource, PATHINFO_EXTENSION), ['xlf', 'xliff']);
     }
 
     /**
@@ -26,17 +24,17 @@ class XliffDumper implements DumperInterface
      * @return Boolean true on success
      *
      */
-    public function update(FileResource $resource, $id, $value)
+    public function update($resource, $id, $value)
     {
         if('' === $id) {
             throw new InvalidTranslationKeyException(
-                sprintf('An empty key can not be used in "%s"', $resource->getResource())
+                sprintf('An empty key can not be used in "%s"', $resource)
             );
         }
         $document = $this->getDomDocument($resource);
         $xpath = $this->getDomXPath($document);
 
-        $escapedId = XPathExpr::xpathLiteral($id);
+        $escapedId = getXpathLiteral($id);
         $sources = $xpath->query(sprintf('//xliff:trans-unit/xliff:source[. =%s]', $escapedId));
 
         $updated = false;
@@ -52,13 +50,16 @@ class XliffDumper implements DumperInterface
         if (false === $updated) {
             $nodeList = $xpath->evaluate('//xliff:trans-unit/@id[php:function("Knp\Bundle\TranslatorBundle\Dumper\dom_xpath_max", ., //xliff:trans-unit/@id)]');
 
-            $number = $nodeList->item(0)->value + 1;
+            $number = 1;
+            if ($nodeList->item(0)) {
+                $number = $nodeList->item(0)->value + 1;
+            }
             $node = $this->create($document, $id, $value, $number);
-            $body = $xpath->query('//xliff:body')->item(0);
+            $body = $xpath->query('//xliff:body')->item(0) ?: $this->createBody($document, $xpath);
             $body->appendChild($node);
         }
         $this->checkErrors();
-        $result = $document->save($resource->getResource());
+        $result = $document->save($resource);
         $this->checkErrors();
         libxml_use_internal_errors($this->currentLibXmlErrorHandler);
 
@@ -79,7 +80,22 @@ class XliffDumper implements DumperInterface
         return $transUnit;
     }
 
-    private function getDomDocument(FileResource $resource)
+    private function createBody(DomDocument $document, DOMXPath $xpath)
+    {
+        $xliff = $xpath->query('//xliff')->item(0) ?: $document->createElement('xliff');
+        $xliff->setAttribute('xmlns', 'urn:oasis:names:tc:xliff:document:1.2');
+        $xliff->setAttribute('version', '1.2');
+        $document->appendChild($xliff);
+
+        $file = $xpath->query('//xliff:file')->item(0) ?: $document->createElement('file');
+        $xliff->appendChild($file);
+        $body = $document->createElement('body');
+        $file->appendChild($body);
+
+        return $body;
+    }
+
+    private function getDomDocument($resource)
     {
         $this->currentLibXmlErrorHandler = libxml_use_internal_errors(true);
 
@@ -89,7 +105,7 @@ class XliffDumper implements DumperInterface
         // but preserve output indentation when dumping
         $document->formatOutput = true;
 
-        $document->load($resource->getResource());
+        $document->load($resource);
 
         return $document;
     }
@@ -144,4 +160,30 @@ function dom_xpath_max($that, $nodes)
     });
 
     return $that[0]->value == $nodes[0]->value;
+}
+
+function getXpathLiteral($element)
+{
+    if (false === strpos($element, "'")) {
+        return "'".$element."'";
+    }
+
+    if (false === strpos($element, '"')) {
+        return '"'.$element.'"';
+    }
+
+    $string = $element;
+    $parts = array();
+    while (true) {
+        if (false !== $pos = strpos($string, "'")) {
+            $parts[] = sprintf("'%s'", substr($string, 0, $pos));
+            $parts[] = "\"'\"";
+            $string = substr($string, $pos + 1);
+        } else {
+            $parts[] = "'$string'";
+            break;
+        }
+    }
+
+    return sprintf('concat(%s)', implode($parts, ', '));
 }

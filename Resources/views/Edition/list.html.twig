@@ -4,30 +4,15 @@
 
 <h1>{{ 'knplabs_translator.list'|trans({}, 'KnpTranslatorBundle') }}</h1>
 
-{% for locale in translations|keys %}
+{% for domain, translations in domains %}
 
-    <h2>{{ locale }}</h2>
-    
-    {% for domain in translations[locale]|keys %}
+    <h2>{{ domain }}</h2>
 
-        <h3>{{ domain }}</h3>
-        <ul>
-            {% for resource in translator.getResources(locale, domain) %}
-                <li>{{ resource.getResource() }}</li>
-            {% endfor %}
-        </ul>
-        <table>
-        {% for source,target in translations[locale][domain] %}
-            <tr>
-                <td class="trans-source">{{ source }}</td>
-                {% set trans = translator.trans(source, {}, domain, locale) %}
-                <td class="trans-target">{{ translatorHelper.wrap(source, trans, domain, locale) }}</td>
-            </tr>
-
-        {% endfor %}
-        </table>
-
+    <ul>
+    {% for source in translations|keys %}
+        <li>{{ source|trans({}, domain) }}</li>
     {% endfor %}
+    </ul>
 
 {% endfor %}
 

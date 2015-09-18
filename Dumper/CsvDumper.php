@@ -2,34 +2,33 @@
 
 namespace Knp\Bundle\TranslatorBundle\Dumper;
 
-use Knp\Bundle\TranslatorBundle\Dumper\DumperInterface;
-use Symfony\Component\Config\Resource\FileResource;
+use Knp\Bundle\TranslatorBundle\Dumper\Dumper;
 use Symfony\Component\Yaml\Yaml;
 use Knp\Bundle\TranslatorBundle\Exception\InvalidTranslationKeyException;
 
-class CsvDumper implements DumperInterface
+class CsvDumper implements Dumper
 {
-    public function supports(FileResource $resource)
+    public function supports($resource)
     {
-        return 'csv' === pathinfo($resource->getResource(), PATHINFO_EXTENSION);
+        return 'csv' === pathinfo($resource, PATHINFO_EXTENSION);
     }
 
     /**
      *
      * Updates the content of a csv file with value for the matched trans id
      */
-    public function update(FileResource $resource, $id, $value)
+    public function update($resource, $id, $value)
     {
         if ('' === $id) {
             throw new InvalidTranslationKeyException(
-                sprintf('An empty key can not be used in "%s"', $resource->getResource())
+                sprintf('An empty key can not be used in "%s"', $resource)
             );
         }
 
         $lines = $this->all($resource);
 
-        if(false === $fd = fopen($resource->getResource(), 'r+b')) {
-            throw new \InvalidArgumentException(sprintf('Error opening file "%s" for writing.', $resource->getResource()));
+        if(false === $fd = fopen($resource, 'r+b')) {
+            throw new \InvalidArgumentException(sprintf('Error opening file "%s" for writing.', $resource));
         }
         // empty the file
         ftruncate($fd, 0);
@@ -62,9 +61,9 @@ class CsvDumper implements DumperInterface
     private function all($resource)
     {
         try {
-            $file = new \SplFileObject($resource->getResource(), 'rb');
+            $file = new \SplFileObject($resource, 'rb');
         } catch(\RuntimeException $e) {
-            throw new \InvalidArgumentException(sprintf('Error opening file "%s".', $resource->getResource()));
+            throw new \InvalidArgumentException(sprintf('Error opening file "%s".', $resource));
         }
 
         $file->setFlags(\SplFileObject::SKIP_EMPTY | \SplFileObject::READ_CSV);

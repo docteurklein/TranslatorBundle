@@ -11,11 +11,13 @@
         }
     ],
     "require": {
-        "php": ">=5.3.0"
+        "php": ">=5.4",
+        "symfony/framework-bundle": "~2.6",
+        "phpspec/phpspec": "^2.3"
+    },
+    "require-dev": {
     },
     "autoload":     {
-        "psr-0": { "Knp\\Bundle\\TranslatorBundle": "" }
-    },
-    "target-dir": "Knp/Bundle/TranslatorBundle",
-    "minimum-stability": "dev"
+        "psr-4": { "Knp\\Bundle\\TranslatorBundle\\": "" }
+    }
 }

@@ -12,20 +12,20 @@
 namespace Knp\Bundle\TranslatorBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\HttpFoundation\Request;
-use Knp\Bundle\TranslatorBundle\Exception\InvalidTranslationKeyException;
+use Knp\Bundle\TranslatorBundle\Translation\Writer;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class TranslatorController
 {
     private $translator;
-    private $request;
+    private $writer;
     private $logger;
 
-    public function __construct(Request $request, Translator $translator, $logger)
+    public function __construct(TranslatorInterface $translator, Writer $writer, $logger)
     {
-        $this->request = $request;
         $this->translator = $translator;
+        $this->writer = $writer;
         $this->logger = $logger;
     }
 
@@ -36,9 +36,9 @@ class TranslatorController
         return new Response($trans);
     }
 
-    public function putAction()
+    public function putAction(Request $request)
     {
-        $translations = $this->request->request->get('trans');
+        $translations = $request->request->get('trans');
 
         foreach($translations as $trans) {
             $id     = @$trans['id'];
@@ -46,22 +46,9 @@ class TranslatorController
             $locale = @$trans['locale'];
             $value  = @$trans['value'];
 
-            $error = null;
-            try {
-                $success = $this->translator->update($id, $value, $domain, $locale);
-                $trans = $value;
-            }
-            catch (InvalidTranslationKeyException $e) {
-                $success = false;
-                $trans = $this->translator->trans($id, array(), $domain, $locale);
-                $error = $e->getMessage();
-            }
+            $this->writer->write($id, $value, $domain, $locale);
         }
 
-        return new Response(json_encode(array(
-            'success' => $success,
-            'trans' => $trans,
-            'error' => $error,
-        )), $error ? 500 : 200, array('Content-Type' => 'application/json'));
+        return new Response;
     }
 }

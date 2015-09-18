@@ -15,8 +15,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\templating\Helper\CoreAssetsHelper;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Bundle\FrameworkBundle\Templating\Helper\AssetsHelper;
 
 /**
  * ResponseListener injects the translator js code.
@@ -30,13 +30,11 @@ class ResponseListener
 {
     private $assetHelper;
     private $router;
-    private $includeVendorAssets;
 
-    public function __construct(CoreAssetsHelper $assetHelper, RouterInterface $router, $includeVendorAssets = true)
+    public function __construct(AssetsHelper $assetHelper, RouterInterface $router)
     {
         $this->assetHelper = $assetHelper;
         $this->router = $router;
-        $this->includeVendorAssets = $includeVendorAssets;
     }
 
     public function onKernelResponse(FilterResponseEvent $event)
@@ -77,10 +75,8 @@ class ResponseListener
         if (false !== $pos = $posrFunction($content, '</body>')) {
 
             $scripts = '';
-            if(true === $this->includeVendorAssets) {
-                $url = $this->assetHelper->getUrl('bundles/knptranslator/js/ext-core.js');
-                $scripts = sprintf('<script type="text/javascript" src="%s"></script>', $url)."\n";
-            }
+            $url = $this->assetHelper->getUrl('bundles/knptranslator/js/ext-core.js');
+            $scripts = sprintf('<script type="text/javascript" src="%s"></script>', $url)."\n";
 
             $url = $this->assetHelper->getUrl('bundles/knptranslator/js/translator.js');
             $scripts .= sprintf('<script type="text/javascript" src="%s"></script>', $url)."\n";

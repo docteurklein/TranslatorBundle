@@ -136,13 +136,12 @@ Knp.Translator = Ext.extend(Ext.util.Observable, {
                 form: 'knplabs-translator-form'
                 ,method: 'POST'
                 ,success: function() {
-                    //self.hide();
+                    self.hide();
                 }
                 ,failure: function(xhr) {
-                    json = Ext.util.JSON.decode(xhr.responseText);
-
+                    var response = xhr.responseText;
                     var el = self.form.select('.error').item(0);
-                    el.dom.firstChild.nodeValue = json.error;
+                    el.dom.firstChild.nodeValue = response;
                     el.show(true);
                 }
             });
