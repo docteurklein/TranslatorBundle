@@ -13,39 +13,14 @@ Currently supported formats:
 Install & setup the bundle
 --------------------------
 
-1.  Fetch the source code
+1.  Install via composer
 
-    Using Git to control your project from project root directory:
-    
-    ``` bash 
+    composer require docteurklein/translator-bundle=~2.0
 
-    git submodule add git://github.com/docteurklein/TranslatorBundle.git vendor/bundles/Knp/Bundle/TranslatorBundle
-
-    ```
-        
-    By cloning repository:
-    
-    ``` bash 
-
-    mkdir -p vendor/bundles/Knp/Bundle
-    cd !$
-    git clone git://github.com/docteurklein/TranslatorBundle.git
-
-    ```
-    
-    By including into deps file:
-    
-    ``` ./deps-file 
-
-    [TranslatorBundle]
-		git=git://github.com/docteurklein/TranslatorBundle.git
-		target=/bundles/Knp/Bundle/TranslatorBundle
-
-    ```
 
 2.  Add the bundle to your `AppKernel` class
 
-    ``` php
+``` php
 
     // app/AppKernerl.php
     public function registerBundles()
@@ -57,24 +32,13 @@ Install & setup the bundle
         );
         // ...
     }
-    
-    ```
 
-3.  Add the Knp namespace to your autoloader
+```
 
-    ```php
 
-    // app/autoload.php
-    $loader->registerNamespaces(array(
-        'Knp' => __DIR__.'/../vendor/bundles',
-        // your other namespaces
-    );
+3.  Add routing
 
-    ```
-
-4.  Add routing
-
-    ``` yaml
+``` yaml
 
     // app/config/routing.yml
 
@@ -86,7 +50,7 @@ Install & setup the bundle
         resource: @KnpTranslatorBundle/Resources/config/routing/routing.yml
             prefix:   /trans
 
-    ```
+```
 
 These route files provide the following routes:
 
@@ -105,7 +69,7 @@ Minimal configuration
 This bundle requires the activation of the core translator:
 
 
-    ``` yaml
+``` yaml
 
     // app/config/config.yml
     framework:
@@ -113,7 +77,7 @@ This bundle requires the activation of the core translator:
         translator:    { fallback: en }
         # ...
 
-    ```
+```
 
 Additional configuration
 ------------------------
@@ -121,62 +85,41 @@ Additional configuration
 This bundle relies on the Ext Core library.
 You can decide wheter or not it will be included automatically.
 
-    ``` yaml
+``` yaml
 
     knplabs_translator:
         include_vendor_assets: false # defaults to true
 
-    ```
+```
 
 Services
 --------
 
 This bundle introduces those services:
 
-    translator.dumper.csv                    container Knp\Bundle\TranslatorBundle\Dumper\CsvDumper
-    translator.dumper.xliff                  container Knp\Bundle\TranslatorBundle\Dumper\XliffDumper
-    translator.dumper.yaml                   container Knp\Bundle\TranslatorBundle\Dumper\YamlDumper
-    translator.writer                        container Knp\Bundle\TranslatorBundle\Translation\Translator
+    knp_translator.dumper.csv                    container Knp\Bundle\TranslatorBundle\Dumper\CsvDumper
+    knp_translator.dumper.xliff                  container Knp\Bundle\TranslatorBundle\Dumper\XliffDumper
+    knp_translator.dumper.yaml                   container Knp\Bundle\TranslatorBundle\Dumper\YamlDumper
+    knp_translator.writer                        container Knp\Bundle\TranslatorBundle\Translation\Writer
 
     controllers are services too:
 
-    knplabs_translator.controller.edition    request   Knp\Bundle\TranslatorBundle\Controller\EditionController
-    knplabs_translator.controller.translator request   Knp\Bundle\TranslatorBundle\Controller\TranslatorController
+    knp_translator.controller.edition    request   Knp\Bundle\TranslatorBundle\Controller\EditionController
+    knp_translator.controller.translator request   Knp\Bundle\TranslatorBundle\Controller\TranslatorController
+
 
 
 API
 ---
 
-    ``` php
-
-    class Knp\Bundle\TranslatorBundle\Translation\Translator extends Symfony\Bundle\FrameworkBundle\Translation\Translator
-    {
-
-        public function isTranslated($id, $domain, $locale);
-
-        public function update($id, $value, $domain, $locale);
-
-        public function getResources($locale, $domain);
-
-        public function getFallbackLocale();
-
-        public function getCatalog($locale);
-
-        public function getLocales();
-
-        public function all();
-
-
-    ```
-
 Updating a given translation key is really simple:
 
 
-    ``` php
+``` php
 
-    $this->get('translator.writer')->update('the key to translate', 'the translated string', 'messages', 'en');
+    $this->get('translator.writer')->write('the key to translate', 'the translated string', 'messages', 'en');
 
-    ```
+```
 
 
 Rest API
@@ -184,7 +127,7 @@ Rest API
 
 *   Update `english` translations files for domain `tests` with `translated value` for key `foo.bar.baz`
 
-    ``` bash
+``` bash
 
     curl -X PUT http://project-url/trans/  \
         -F 'id=foo.bar.baz' \
@@ -192,12 +135,12 @@ Rest API
         -F 'locale=en' \
         -F 'value=translate value' 
 
-    ```
+```
 
 *   Get the translated value of key `foo.bar.baz` for `english` locale for `tests` domain
 
-    ``` bash
+``` bash
 
     curl http://project-url/trans/foo.bar.baz/tests/en
 
-    ```
+```

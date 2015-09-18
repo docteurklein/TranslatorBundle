@@ -18,27 +18,20 @@ class TranslatorPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('translator.writer') || !$container->hasDefinition('translator.default')) {
+        if (!$container->hasDefinition('knp_translator.writer') || !$container->hasDefinition('translator.default')) {
             return;
         }
 
-        $translatorRealDefinition = $container->findDefinition('translator.default');
-        $translatorDefinition = $container->findDefinition('translator.writer');
+        $writer = $container->findDefinition('knp_translator.writer');
+        $translator = $container->findDefinition('translator');
+        $writer->replaceArgument(0, $translator->getArgument(3)['resource_files']);
 
-        $translatorDefinition->replaceArgument(2, $translatorRealDefinition->getArgument(2));
-
-        foreach($translatorRealDefinition->getMethodCalls() as $methodCall) {
-            $translatorDefinition->addMethodCall($methodCall[0], $methodCall[1]);
-            // use resources from translator.real to add available locales
-            if ('addResource' === $methodCall[0]) {
-                // $methodCall[1][2] is the locale
-                // @see FrameworkBundle\DependencyInjection\FrameworkExtension::registerTranslatorConfiguration
-                $translatorDefinition->addMethodCall('addLocale', array($methodCall[1][2]));
-            }
+        foreach($container->findTaggedServiceIds('knp_translator.dumper') as $id => $attributes) {
+            $writer
+                ->addMethodCall('addDumper', array($container->getDefinition($id)))
+            ;
         }
 
-        foreach($container->findTaggedServiceIds('knplabs_translator.dumper') as $id => $attributes) {
-            $translatorDefinition->addMethodCall('addDumper', array($container->getDefinition($id)));
-        }
+        $container->setDefinition('twig.extension.trans', $container->getDefinition('knp_translator.twig.extension.trans'));
     }
 }

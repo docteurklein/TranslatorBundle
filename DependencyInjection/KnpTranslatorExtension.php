@@ -21,19 +21,13 @@ class KnpTranslatorExtension extends Extension
         }
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('translation.xml');
+        $loader->load('controller.xml');
 
-        foreach (array('translation', 'controller') as $basename) {
-            $loader->load(sprintf('%s.xml', $basename));
+        if (empty($config['include_vendor_assets'])) {
+            $container->removeDefinition('knp_translator.response.listener.assets_injecter');
         }
 
-        foreach (array('include_vendor_assets') as $attribute) {
-            if (isset($config[$attribute])) {
-                $container->setParameter('knplabs.translator.'.$attribute, $config[$attribute]);
-            }
-        }
-
-        // Use the "writer" translator instead of the default one
-        $container->setAlias('translator', 'translator.writer');
-        $container->setAlias('templating.helper.translator', 'templating.helper.translator.writer');
+        $container->setAlias('templating.helper.translator', 'knp_translator.templating.helper.translator');
     }
 }

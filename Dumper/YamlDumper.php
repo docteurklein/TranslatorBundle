@@ -2,16 +2,15 @@
 
 namespace Knp\Bundle\TranslatorBundle\Dumper;
 
-use Knp\Bundle\TranslatorBundle\Dumper\DumperInterface;
-use Symfony\Component\Config\Resource\FileResource;
+use Knp\Bundle\TranslatorBundle\Dumper\Dumper;
 use Symfony\Component\Yaml\Yaml;
 use Knp\Bundle\TranslatorBundle\Exception\InvalidTranslationKeyException;
 
-class YamlDumper implements DumperInterface
+class YamlDumper implements Dumper
 {
-    public function supports(FileResource $resource)
+    public function supports($resource)
     {
-        return 'yml' === pathinfo($resource->getResource(), PATHINFO_EXTENSION);
+        return 'yml' === pathinfo($resource, PATHINFO_EXTENSION);
     }
 
     /**
@@ -29,14 +28,14 @@ class YamlDumper implements DumperInterface
      *
      * ```
      */
-    public function update(FileResource $resource, $id, $value)
+    public function update($resource, $id, $value)
     {
         if('' === $id) {
             throw new InvalidTranslationKeyException(
-                sprintf('An empty key can not be used in "%s"', $resource->getResource())
+                sprintf('An empty key can not be used in "%s"', $resource)
             );
         }
-        $translations = Yaml::parse($resource->getResource());
+        $translations = Yaml::parse($resource);
         if (!is_array($translations)) {
             return false;
         }
@@ -50,7 +49,7 @@ class YamlDumper implements DumperInterface
         foreach ($explodedId as $key) {
             if( ! is_array($finalNode)) {
                 throw new InvalidTranslationKeyException(
-                    sprintf('The part "%s" of key "%s" is a scalar yaml node in "%s"', $lastKey, $id, $resource->getResource())
+                    sprintf('The part "%s" of key "%s" is a scalar yaml node in "%s"', $lastKey, $id, $resource)
                 );
             }
             if (false === array_key_exists($key, $finalNode)) {
@@ -67,7 +66,7 @@ class YamlDumper implements DumperInterface
 
         if(is_array($finalNode)) {
             throw new InvalidTranslationKeyException(
-                sprintf('The key "%s" is not a scalar yaml node in "%s"', $id, $resource->getResource())
+                sprintf('The key "%s" is not a scalar yaml node in "%s"', $id, $resource)
             );
         }
 
@@ -76,7 +75,7 @@ class YamlDumper implements DumperInterface
         // dump yaml and switch to inline at 1000th level
         $yaml = Yaml::dump($translations, 1000);
 
-        $result = file_put_contents($resource->getResource(), $yaml);
+        $result = file_put_contents($resource, $yaml);
 
         return false !== $result;
     }
