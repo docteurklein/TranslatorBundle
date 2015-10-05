@@ -49,16 +49,17 @@ Knp.Translator = Ext.extend(Ext.util.Observable, {
         var self = this;
 
         // node content
-        if(node.firstChild !== null && node.firstChild.nodeType === 3) { // Node.TEXT_NODE === 3
-            var content = node.firstChild.nodeValue;
-            var result = this.checkTranslatableText(content, node);
-            if(false !== result) {
-                node.firstChild.nodeValue = result;
+        Ext.each(node.childNodes, function(childNode) {
+            if(childNode.nodeType === 3) {
+                var content = childNode.nodeValue;
+                var result = self.checkTranslatableText(content, node);
+                if(false !== result) {
+                    childNode.nodeValue = result;
+                }
             }
-        }
+        });
 
         // node attributes
-        var matched = false;
         Ext.each(node.attributes, function(attribute) {
             var result = self.checkTranslatableText(attribute.value, node);
             if(false !== result) {
