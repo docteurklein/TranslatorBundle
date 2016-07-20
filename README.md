@@ -15,13 +15,13 @@ Install & setup the bundle
 
 1.  Install via composer
 
+```bash
     composer require docteurklein/translator-bundle=~3.0
-
+```
 
 2.  Add the bundle to your `AppKernel` class
 
 ``` php
-
     // app/AppKernerl.php
     public function registerBundles()
     {
@@ -32,14 +32,12 @@ Install & setup the bundle
         );
         // ...
     }
-
 ```
 
 
 3.  Add routing
 
 ``` yaml
-
     // app/config/routing.yml
 
     knplabs_translator_admin:
@@ -49,7 +47,6 @@ Install & setup the bundle
     knplabs_translator:
         resource: @KnpTranslatorBundle/Resources/config/routing/routing.yml
             prefix:   /trans
-
 ```
 
 These route files provide the following routes:
@@ -70,13 +67,11 @@ This bundle requires the activation of the core translator:
 
 
 ``` yaml
-
     // app/config/config.yml
     framework:
         # ...
         translator:    { fallback: en }
         # ...
-
 ```
 
 Additional configuration
@@ -86,10 +81,8 @@ This bundle relies on the Ext Core library.
 You can decide wheter or not it will be included automatically.
 
 ``` yaml
-
     knplabs_translator:
         include_vendor_assets: false # defaults to true
-
 ```
 
 Services
@@ -116,9 +109,7 @@ Updating a given translation key is really simple:
 
 
 ``` php
-
     $this->get('translator.writer')->write('the key to translate', 'the translated string', 'messages', 'en');
-
 ```
 
 
@@ -128,19 +119,15 @@ Rest API
 *   Update `english` translations files for domain `tests` with `translated value` for key `foo.bar.baz`
 
 ``` bash
-
     curl -X PUT http://project-url/trans/  \
         -F 'id=foo.bar.baz' \
         -F 'domain=messages' \
         -F 'locale=en' \
         -F 'value=translate value' 
-
 ```
 
 *   Get the translated value of key `foo.bar.baz` for `english` locale for `tests` domain
 
 ``` bash
-
     curl http://project-url/trans/foo.bar.baz/tests/en
-
 ```
